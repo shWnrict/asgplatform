@@ -1,26 +1,34 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
 const router = express.Router();
 
-router.post('/send', async (req, res) => {
-    const { to, cc, bcc, subject, body, attachment } = req.body;
+const upload = multer();
+
+router.post('/send', upload.single('attachment'), async (req, res) => {
+    const { to, cc, bcc, subject, body } = req.body;
+    const attachment = req.file;
+
+    if (!to) {
+        return res.status(400).send('Recipient email is required!');
+    }
 
     const transporter = nodemailer.createTransport({
-        service: 'gmail', // Use your email service
+        service: 'gmail',
         auth: {
-            user: process.env.EMAIL_USER, // Your email address
-            pass: process.env.EMAIL_PASS  // Your email password or app password
-        }
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
     });
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to,
-        cc,
-        bcc,
+        cc: cc || undefined,
+        bcc: bcc || undefined,
         subject,
         text: body,
-        attachments: attachment ? [{ filename: attachment.name, content: attachment.data }] : [] // Adjust this line if you are handling attachments differently
+        attachments: attachment ? [{ filename: attachment.originalname, content: attachment.buffer }] : [], // Use buffer for attachment
     };
 
     try {

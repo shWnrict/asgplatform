@@ -11,10 +11,14 @@ const EmailSender = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!recipient) {
+            alert('Recipient email is required!');
+            return;
+        }
         const formData = new FormData();
         formData.append('to', recipient);
-        formData.append('cc', cc);
-        formData.append('bcc', bcc);
+        if (cc) formData.append('cc', cc);
+        if (bcc) formData.append('bcc', bcc);
         formData.append('subject', subject);
         formData.append('body', body);
         if (attachment) {
