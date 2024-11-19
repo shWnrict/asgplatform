@@ -1,5 +1,22 @@
 import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import EmailSender from './components/EmailSender';
+import SmsSender from './components/SmsSender';
+import Chat from './components/Chat';
+import Call from './components/Call';
+
+const App = () => {
+    return (
+        <div className="App">
+            <h1>Omni-Channel Communication App</h1>
+            <EmailSender />
+            <SmsSender />
+            <Chat />
+            <Call />
+        </div>
+    );
+};
 
 function App() {
   return (
