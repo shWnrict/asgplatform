@@ -2,44 +2,39 @@ import React, { useState } from 'react';
 
 const Call = () => {
     const [dialNumber, setDialNumber] = useState('');
-    const [incomingCall, setIncomingCall] = useState(null); // Simulate incoming call
 
     const handleDial = () => {
         // Logic to initiate a call using Twilio or another service
         alert(`Calling ${dialNumber}`);
+        setDialNumber(''); // Clear the number after dialing
+    };
+
+    const handleButtonClick = (num) => {
+        setDialNumber((prev) => prev + num);
+    };
+
+    const handleClear = () => {
         setDialNumber('');
-    };
-
-    const answerCall = () => {
-        alert('Call answered');
-        setIncomingCall(null); // Reset incoming call
-    };
-
-    const rejectCall = () => {
-        alert('Call rejected');
-        setIncomingCall(null); // Reset incoming call
     };
 
     return (
         <div>
-            <h2>Call</h2>
-            {incomingCall ? (
-                <div className="incoming-call-popup">
-                    <h3>Incoming Call from {incomingCall}</h3>
-                    <button onClick={answerCall}>Answer</button>
-                    <button onClick={rejectCall}>Reject</button>
+            <h2>Dial Pad</h2>
+            <div className="dial-pad">
+                <input 
+                    type="text" 
+                    placeholder="Enter Number" 
+                    value={dialNumber} 
+                    readOnly 
+                />
+                <div className="button-grid">
+                    {['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'].map((num) => (
+                        <button key={num} onClick={() => handleButtonClick(num)}>{num}</button>
+                    ))}
                 </div>
-            ) : (
-                <>
-                    <input 
-                        type="text" 
-                        placeholder="Dial Number" 
-                        value={dialNumber} 
-                        onChange={(e) => setDialNumber(e.target.value)} 
-                    />
-                    <button onClick={handleDial}>Dial</button>
-                </>
-            )}
+                <button onClick={handleClear}>Clear</button>
+                <button onClick={handleDial}>Call</button>
+            </div>
         </div>
     );
 };

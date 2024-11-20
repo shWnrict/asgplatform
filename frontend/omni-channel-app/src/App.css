@@ -101,4 +101,33 @@
   padding: 10px 20px;
 }
 
+/* Call */
+.dial-pad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dial-pad input {
+  width: 200px; /* Adjust width as needed */
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px; /* Space between buttons */
+}
+
+.button-grid button {
+  padding: 20px;
+  font-size: 20px;
+}
+
+.dial-pad button {
+  margin-top: 10px; /* Space above Call and Clear buttons */
+}
+
 /* */
