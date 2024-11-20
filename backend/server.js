@@ -9,6 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -20,9 +21,13 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 // Socket.io setup for chat functionality
 io.on('connection', (socket) => {
     console.log('New client connected');
-    
-    socket.on('sendMessage', (message) => {
-        io.emit('receiveMessage', message);
+
+    socket.on('sendMessage', (msgData) => {
+        io.emit('receiveMessage', msgData); // Broadcast received message to all clients
+    });
+
+    socket.on('typing', () => {
+        socket.broadcast.emit('typing'); // Notify others that someone is typing
     });
 
     socket.on('disconnect', () => {
@@ -31,10 +36,11 @@ io.on('connection', (socket) => {
 });
 
 // Import routes
-app.use('/api/email', require('./routes/email'));
+app.use('/api/email', require('./routes/email')); // Use the email route
 app.use('/api/sms', require('./routes/sms'));
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/calls', require('./routes/calls'));
 
+// Start the server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

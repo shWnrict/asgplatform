@@ -5,10 +5,9 @@ const SentItems = () => {
     const [sentEmails, setSentEmails] = useState([]);
 
     useEffect(() => {
-        // Fetch sent emails from the backend when the component mounts
         const fetchSentEmails = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/email/sent'); // Adjust this endpoint as needed
+                const response = await axios.get('http://localhost:5000/api/email/sent');
                 setSentEmails(response.data);
             } catch (error) {
                 console.error('Error fetching sent emails:', error);
@@ -20,12 +19,11 @@ const SentItems = () => {
 
     return (
         <div>
-            <h2>Sent Items</h2>
+            <h3>Sent Items</h3>
             <ul>
                 {sentEmails.map((email) => (
-                    <li key={email.id}>
+                    <li key={email._id}>
                         <strong>{email.subject}</strong> to {email.to} - {email.body}
-                        {/* Add more details or options to delete */}
                     </li>
                 ))}
             </ul>
