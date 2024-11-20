@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
+import './App.css'; // Importing the CSS file
 import Navigation from './components/Navigation';
 import Chat from './components/Chat';
 import Email from './components/Email';
-import SMS from './components/SMS'; // Import the new SMS component
-import Call from './components/Call'; // Import the new Call component
-import './App.css';
+import SMS from './components/SMS';
+import Call from './components/Call';
+import Home from './components/Home';
 
 const App = () => {
     const [activeTab, setActiveTab] = useState('home');
 
+    const handleLogout = () => {
+        // Placeholder for logout functionality
+        console.log("User logged out");
+        // You can add logic here to clear user data or redirect to a login page
+    };
+
     const renderContent = () => {
         switch (activeTab) {
             case 'home':
-                return <h2>Welcome to the Omni-Channel Communication App!</h2>;
+                return <Home onLogout={handleLogout} />;
             case 'chat':
                 return <Chat />;
             case 'email':
@@ -22,7 +29,7 @@ const App = () => {
             case 'call':
                 return <Call />;
             default:
-                return <h2>Welcome to the Omni-Channel Communication App!</h2>;
+                return <Home onLogout={handleLogout} />;
         }
     };
 
