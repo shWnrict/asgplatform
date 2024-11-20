@@ -34,7 +34,7 @@ const App = () => {
                     <Route path="/" element={user ? (
                         <>
                             <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
-                            {activeTab === 'home' && <Home onLogout={handleLogout} />}
+                            {activeTab === 'home' && <Home onLogout={handleLogout} loggedInUser={user} />} {/* Pass username here */}
                             {activeTab === 'chat' && <Chat />}
                             {activeTab === 'email' && <Email />}
                             {activeTab === 'sms' && <SMS />}
