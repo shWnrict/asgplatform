@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Updated imports
 import './App.css'; // Importing the CSS file
 import Navigation from './components/Navigation';
 import Chat from './components/Chat';
@@ -6,41 +7,45 @@ import Email from './components/Email';
 import SMS from './components/SMS';
 import Call from './components/Call';
 import Home from './components/Home';
+import Login from './components/Login'; // Import the new Login component
 
 const App = () => {
     const [activeTab, setActiveTab] = useState('home');
+    const [user, setUser] = useState(null); // State to track logged-in user
 
     const handleLogout = () => {
-        // Placeholder for logout functionality
         console.log("User logged out");
-        // You can add logic here to clear user data or redirect to a login page
+        setUser(null); // Clear user data on logout
     };
 
-    const renderContent = () => {
-        switch (activeTab) {
-            case 'home':
-                return <Home onLogout={handleLogout} />;
-            case 'chat':
-                return <Chat />;
-            case 'email':
-                return <Email />;
-            case 'sms':
-                return <SMS />;
-            case 'call':
-                return <Call />;
-            default:
-                return <Home onLogout={handleLogout} />;
-        }
+    const handleLogin = (username) => {
+        setUser(username); // Set logged-in user
+        setActiveTab('home'); // Redirect to home tab after login
     };
 
     return (
-        <div className="App">
-            <h1>Omni-Channel Communication App</h1>
-            <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
-            <div className="tab-content">
-                {renderContent()}
+        <Router>
+            <div className="App">
+                <h1>Omni-Channel Communication App</h1>
+                <Routes>
+                    {/* Route for Login */}
+                    <Route path="/login" element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
+                    {/* Default route for main content */}
+                    <Route path="/" element={user ? (
+                        <>
+                            <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+                            {activeTab === 'home' && <Home onLogout={handleLogout} />}
+                            {activeTab === 'chat' && <Chat />}
+                            {activeTab === 'email' && <Email />}
+                            {activeTab === 'sms' && <SMS />}
+                            {activeTab === 'call' && <Call />}
+                        </>
+                    ) : (
+                        <Navigate to="/login" />
+                    )} />
+                </Routes>
             </div>
-        </div>
+        </Router>
     );
 };
 
