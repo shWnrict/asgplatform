@@ -1,22 +1,30 @@
+// src/components/Chat.js
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import EmojiPicker from 'emoji-picker-react';
-import './Chat.css'; // Ensure this CSS file is created
+import './Chat.css';
 
-const socket = io('http://localhost:5000'); // Adjust this URL based on your backend
+const socket = io('http://localhost:5000');
 
-const Chat = () => {
-    const [messages, setMessages] = useState([]);
+const Chat = ({ loggedInUser }) => {
+    const [messages, setMessages] = useState(() => {
+        // Load messages from local storage on initial render
+        const savedMessages = localStorage.getItem('chatMessages');
+        return savedMessages ? JSON.parse(savedMessages) : [];
+    });
     const [message, setMessage] = useState('');
     const [attachment, setAttachment] = useState(null);
     const [isTyping, setIsTyping] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const userId = "User1"; // Replace with actual user identification logic
+    const [isSending, setIsSending] = useState(false);
 
     useEffect(() => {
+        // Save messages to local storage whenever messages change
+        localStorage.setItem('chatMessages', JSON.stringify(messages));
+
         socket.on('receiveMessage', (msg) => {
             setMessages((prevMessages) => [...prevMessages, msg]);
-            setIsTyping(false); // Reset typing indicator when a message is received
+            setIsTyping(false);
         });
 
         socket.on('typing', () => {
@@ -32,17 +40,29 @@ const Chat = () => {
             socket.off('typing');
             socket.off('stopTyping');
         };
-    }, []);
+    }, [messages]);
 
-    const handleSendMessage = (e) => {
+    const handleSendMessage = async (e) => {
         e.preventDefault();
-        if (!message && !attachment) return; // Prevent sending empty messages
+        if (!message && !attachment) return;
 
-        const msgData = { userId, message, attachment };
+        const msgData = {
+            userId: loggedInUser,
+            message,
+            attachment,
+            timestamp: new Date().toLocaleTimeString()
+        };
+
+        setIsSending(true);
         socket.emit('sendMessage', msgData);
-        setMessages((prevMessages) => [...prevMessages, msgData]); // Add to local messages
+        resetInput();
+        setIsSending(false);
+    };
+
+    const resetInput = () => {
         setMessage('');
         setAttachment(null);
+        setShowEmojiPicker(false);
     };
 
     const handleTyping = () => {
@@ -51,19 +71,28 @@ const Chat = () => {
 
     const handleEmojiClick = (emojiObject) => {
         setMessage((prevMessage) => prevMessage + emojiObject.emoji);
-        setShowEmojiPicker(false); // Close emoji picker after selection
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file && file.size > 5 * 1024 * 1024) {
+            alert("File size exceeds 5MB limit.");
+            return;
+        }
+        setAttachment(file);
     };
 
     return (
         <div className="chat-container">
             <div className="messages">
                 {messages.map((msg, index) => (
-                    <div key={index} className={`message-bubble ${msg.attachment ? 'has-attachment' : ''} ${msg.userId === userId ? 'my-message' : ''}`}>
+                    <div key={index} className={`message-bubble ${msg.userId === loggedInUser ? 'my-message' : 'admin-message'}`}>
                         <p><strong>{msg.userId}:</strong> {msg.message}</p>
                         {msg.attachment && <img src={URL.createObjectURL(msg.attachment)} alt="attachment" />}
+                        <span className="timestamp">{msg.timestamp}</span>
                     </div>
                 ))}
-                {isTyping && <div className="typing-indicator">User is typing...</div>}
+                {isTyping && <div className="typing-indicator">{loggedInUser === "admin" ? "User is typing..." : "Admin is typing..."}</div>}
             </div>
             <form onSubmit={handleSendMessage} className="chat-form">
                 <input
@@ -71,19 +100,20 @@ const Chat = () => {
                     value={message}
                     onChange={(e) => {
                         setMessage(e.target.value);
-                        handleTyping(); // Emit typing event on input change
+                        handleTyping();
                     }}
                     placeholder="Type a message..."
                 />
                 <input
                     type="file"
-                    onChange={(e) => setAttachment(e.target.files[0])}
+                    onChange={handleFileChange}
                 />
+                {attachment && <div className="attachment-preview"><p>{attachment.name}</p></div>}
                 <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😊</button>
                 {showEmojiPicker && (
                     <EmojiPicker onEmojiClick={handleEmojiClick} />
                 )}
-                <button type="submit">Send</button>
+                <button type="submit" disabled={isSending}>{isSending ? 'Sending...' : 'Send'}</button>
             </form>
         </div>
     );

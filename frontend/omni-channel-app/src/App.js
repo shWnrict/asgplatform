@@ -35,7 +35,7 @@ const App = () => {
                         <>
                             <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
                             {activeTab === 'home' && <Home onLogout={handleLogout} loggedInUser={user} />} {/* Pass username here */}
-                            {activeTab === 'chat' && <Chat />}
+                            {activeTab === 'chat' && <Chat loggedInUser={user} />} {/* Pass logged-in user here */}
                             {activeTab === 'email' && <Email />}
                             {activeTab === 'sms' && <SMS />}
                             {activeTab === 'call' && <Call />}

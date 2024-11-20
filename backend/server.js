@@ -1,33 +1,38 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
-require('dotenv').config();
+const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    cors: {
+        origin: "*", // Adjust this based on your frontend URL for production
+        methods: ["GET", "POST"]
+    }
+});
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error(err));
-
-// Socket.io setup for chat functionality
+// Handle socket connections
 io.on('connection', (socket) => {
     console.log('New client connected');
 
-    socket.on('sendMessage', (msgData) => {
-        io.emit('receiveMessage', msgData); // Broadcast received message to all clients
+    // Listen for incoming messages
+    socket.on('sendMessage', (msg) => {
+        console.log(`Message received: ${JSON.stringify(msg)}`); // Log the received message
+        io.emit('receiveMessage', msg); // Broadcast message to all clients
     });
 
+    // Listen for typing events
     socket.on('typing', () => {
-        socket.broadcast.emit('typing'); // Notify others that someone is typing
+        socket.broadcast.emit('typing'); // Notify other clients that someone is typing
+    });
+
+    socket.on('stopTyping', () => {
+        socket.broadcast.emit('stopTyping'); // Notify other clients that typing has stopped
     });
 
     socket.on('disconnect', () => {
@@ -35,12 +40,8 @@ io.on('connection', (socket) => {
     });
 });
 
-// Import routes
-app.use('/api/email', require('./routes/email')); // Use the email route
-app.use('/api/sms', require('./routes/sms'));
-app.use('/api/chat', require('./routes/chat'));
-app.use('/api/calls', require('./routes/calls'));
-
-// Start the server
+// Start server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
