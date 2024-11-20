@@ -1,0 +1,37 @@
+.compose-email-container {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.compose-email-container h2 {
+    margin-bottom: 15px;
+}
+
+.compose-email-container input,
+.compose-email-container textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.compose-email-container textarea {
+    height: 200px; /* Adjust height as needed */
+}
+
+.compose-email-container button {
+    padding: 10px 20px;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.compose-email-container button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
