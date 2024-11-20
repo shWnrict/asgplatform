@@ -16,10 +16,10 @@ const Login = ({ onLogin }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        // Check if the entered credentials match any user
         const foundUser = users.find(user => user.username === username && user.password === password);
-
+    
         if (foundUser) {
+            localStorage.setItem('loggedInUser', foundUser.username); // Store username in local storage
             onLogin(foundUser.username); // Call the onLogin function passed as a prop
         } else {
             setError('Invalid username or password');

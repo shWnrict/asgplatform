@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Updated imports
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css'; // Importing the CSS file
 import Navigation from './components/Navigation';
 import Chat from './components/Chat';
@@ -11,11 +11,12 @@ import Login from './components/Login'; // Import the new Login component
 
 const App = () => {
     const [activeTab, setActiveTab] = useState('home');
-    const [user, setUser] = useState(null); // State to track logged-in user
+    const [user, setUser] = useState(() => localStorage.getItem('loggedInUser')); // Retrieve user from local storage
 
     const handleLogout = () => {
         console.log("User logged out");
-        setUser(null); // Clear user data on logout
+        localStorage.removeItem('loggedInUser'); // Clear user data from local storage
+        setUser(null); // Clear user state
     };
 
     const handleLogin = (username) => {
@@ -34,8 +35,8 @@ const App = () => {
                     <Route path="/" element={user ? (
                         <>
                             <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
-                            {activeTab === 'home' && <Home onLogout={handleLogout} loggedInUser={user} />} {/* Pass username here */}
-                            {activeTab === 'chat' && <Chat loggedInUser={user} />} {/* Pass logged-in user here */}
+                            {activeTab === 'home' && <Home onLogout={handleLogout} loggedInUser={user} />}
+                            {activeTab === 'chat' && <Chat loggedInUser={user} />}
                             {activeTab === 'email' && <Email />}
                             {activeTab === 'sms' && <SMS />}
                             {activeTab === 'call' && <Call />}
