@@ -36,3 +36,43 @@
     transform: rotate(360deg);
   }
 }
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.tab-content {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.navigation button {
+  padding: 10px 20px;
+}
+
+.tab-content {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.email-tabs {
+  display: flex;
+  justify-content: space-around;
+}
+
+.email-tabs button {
+  padding: 10px 20px;
+}

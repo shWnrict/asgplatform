@@ -1,42 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
-import React from 'react';
-import EmailSender from './components/EmailSender';
-import SmsSender from './components/SmsSender';
-import Chat from './components/Chat';
-import Call from './components/Call';
+import React, { useState } from 'react';
+import Navigation from './components/Navigation';
+import Chat from './components/Chat'; // Create this component later
+import Email from './components/Email'; // Create this component later
+import Contacts from './components/Contacts'; // Create this component later
+import './App.css'; // Ensure this line is present
+
 
 const App = () => {
+    const [activeTab, setActiveTab] = useState('home');
+
+    const renderContent = () => {
+        switch (activeTab) {
+            case 'home':
+                return <h2>Welcome to the Omni-Channel Communication App!</h2>;
+            case 'chat':
+                return <Chat />;
+            case 'email':
+                return <Email />;
+            case 'contacts':
+                return <Contacts />;
+            case 'logout':
+                // Handle logout functionality here
+                return <h2>You have logged out.</h2>;
+            default:
+                return <h2>Welcome to the Omni-Channel Communication App!</h2>;
+        }
+    };
+
     return (
         <div className="App">
             <h1>Omni-Channel Communication App</h1>
-            <EmailSender />
-            <SmsSender />
-            <Chat />
-            <Call />
+            <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+            <div className="tab-content">
+                {renderContent()}
+            </div>
         </div>
     );
 };
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
 
 export default App;
