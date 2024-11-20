@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import EmojiPicker from 'emoji-picker-react';
-import './Chat.css'; // Create this CSS file for styling
+import './Chat.css'; // Ensure this CSS file is created
 
 const socket = io('http://localhost:5000'); // Adjust this URL based on your backend
 
@@ -11,6 +11,7 @@ const Chat = () => {
     const [attachment, setAttachment] = useState(null);
     const [isTyping, setIsTyping] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const userId = "User1"; // Replace with actual user identification logic
 
     useEffect(() => {
         socket.on('receiveMessage', (msg) => {
@@ -37,7 +38,7 @@ const Chat = () => {
         e.preventDefault();
         if (!message && !attachment) return; // Prevent sending empty messages
 
-        const msgData = { message, attachment };
+        const msgData = { userId, message, attachment };
         socket.emit('sendMessage', msgData);
         setMessages((prevMessages) => [...prevMessages, msgData]); // Add to local messages
         setMessage('');
@@ -57,8 +58,8 @@ const Chat = () => {
         <div className="chat-container">
             <div className="messages">
                 {messages.map((msg, index) => (
-                    <div key={index} className={`message-bubble ${msg.attachment ? 'has-attachment' : ''}`}>
-                        <p>{msg.message}</p>
+                    <div key={index} className={`message-bubble ${msg.attachment ? 'has-attachment' : ''} ${msg.userId === userId ? 'my-message' : ''}`}>
+                        <p><strong>{msg.userId}:</strong> {msg.message}</p>
                         {msg.attachment && <img src={URL.createObjectURL(msg.attachment)} alt="attachment" />}
                     </div>
                 ))}
