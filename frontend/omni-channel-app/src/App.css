@@ -36,3 +36,98 @@
     transform: rotate(360deg);
   }
 }
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.navigation button {
+  padding: 10px 20px;
+}
+
+.tab-content {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.sms-tabs {
+  display: flex;
+}
+
+.sms-tabs button {
+  padding: 10px 20px;
+}
+
+.incoming-call-popup {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/*Email*/
+.email-tabs {
+  display: flex;
+  justify-content: space-around;
+}
+
+.email-tabs button {
+  padding: 10px 20px;
+}
+
+/*Home*/
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-container h2 {
+  margin-bottom: 20px;
+}
+
+.home-container button {
+  padding: 10px 20px;
+}
+
+/* Call */
+.dial-pad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dial-pad input {
+  width: 200px; /* Adjust width as needed */
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px; /* Space between buttons */
+}
+
+.button-grid button {
+  padding: 20px;
+  font-size: 20px;
+}
+
+.dial-pad button {
+  margin-top: 10px; /* Space above Call and Clear buttons */
+}
+
+/* */
