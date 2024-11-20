@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client'; // Make sure to install socket.io-client
-// import EmojiPicker from 'emoji-picker-react'; // Install this package for emoji support
+import io from 'socket.io-client';
+import EmojiPicker from 'emoji-picker-react';
+import './Chat.css'; // Create this CSS file for styling
 
 const socket = io('http://localhost:5000'); // Adjust this URL based on your backend
 
