@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import ReactQuill from 'react-quill'; // Import the rich text editor
+import 'react-quill/dist/quill.snow.css'; // Import styles for the editor
 import './EmailSender.css'; // Create a CSS file for styling
 
 const EmailSender = ({ onEmailSent }) => {
@@ -78,12 +80,8 @@ const EmailSender = ({ onEmailSent }) => {
                     onChange={(e) => setSubject(e.target.value)} 
                     required 
                 />
-                <textarea 
-                    placeholder="Body" 
-                    value={body} 
-                    onChange={(e) => setBody(e.target.value)} 
-                    required 
-                ></textarea>
+                {/* Rich Text Editor for Email Body */}
+                <ReactQuill value={body} onChange={setBody} placeholder="Compose your message here..." />
                 <input 
                     type="file" 
                     onChange={(e) => setAttachment(e.target.files[0])} 

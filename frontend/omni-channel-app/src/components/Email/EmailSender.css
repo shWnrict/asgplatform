@@ -11,7 +11,7 @@
 }
 
 .compose-email-container input,
-.compose-email-container textarea {
+.compose-email-container .ql-editor {
     width: 100%;
     margin-bottom: 10px;
     padding: 10px;
@@ -19,8 +19,8 @@
     border-radius: 4px;
 }
 
-.compose-email-container textarea {
-    height: 200px; /* Adjust height as needed */
+.compose-email-container .ql-editor {
+    min-height: 200px; /* Set minimum height for the editor */
 }
 
 .compose-email-container button {
@@ -29,7 +29,6 @@
     color: white;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
 }
 
 .compose-email-container button:hover {
