@@ -48,11 +48,6 @@
   cursor: pointer;
 }
 
-.tab-content {
-  border: 1px solid #ccc;
-  padding: 20px;
-}
-
 .navigation {
   display: flex;
   justify-content: space-around;
@@ -68,6 +63,20 @@
   padding: 20px;
 }
 
+.sms-tabs {
+  display: flex;
+}
+
+.sms-tabs button {
+  padding: 10px 20px;
+}
+
+.incoming-call-popup {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/*Email*/
 .email-tabs {
   display: flex;
   justify-content: space-around;

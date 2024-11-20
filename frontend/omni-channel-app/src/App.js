@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Navigation from './components/Navigation';
-import Chat from './components/Chat'; // Create this component later
-import Email from './components/Email'; // Create this component later
-import Contacts from './components/Contacts'; // Create this component later
-import './App.css'; // Ensure this line is present
-
+import Chat from './components/Chat';
+import Email from './components/Email';
+import SMS from './components/SMS'; // Import the new SMS component
+import Call from './components/Call'; // Import the new Call component
+import './App.css';
 
 const App = () => {
     const [activeTab, setActiveTab] = useState('home');
@@ -17,11 +17,10 @@ const App = () => {
                 return <Chat />;
             case 'email':
                 return <Email />;
-            case 'contacts':
-                return <Contacts />;
-            case 'logout':
-                // Handle logout functionality here
-                return <h2>You have logged out.</h2>;
+            case 'sms':
+                return <SMS />;
+            case 'call':
+                return <Call />;
             default:
                 return <h2>Welcome to the Omni-Channel Communication App!</h2>;
         }
