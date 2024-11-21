@@ -3,7 +3,6 @@ const nodemailer = require('nodemailer');
 const multer = require('multer');
 const Email = require('../models/Email'); // Import the Email model
 const router = express.Router();
-
 const upload = multer();
 
 router.post('/send', upload.single('attachment'), async (req, res) => {
