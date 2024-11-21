@@ -1,4 +1,3 @@
-// src/components/Chat.js
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import EmojiPicker from 'emoji-picker-react';
@@ -8,7 +7,6 @@ const socket = io('http://localhost:5000');
 
 const Chat = ({ loggedInUser }) => {
     const [messages, setMessages] = useState(() => {
-        // Load messages from local storage on initial render
         const savedMessages = localStorage.getItem('chatMessages');
         return savedMessages ? JSON.parse(savedMessages) : [];
     });
@@ -19,7 +17,6 @@ const Chat = ({ loggedInUser }) => {
     const [isSending, setIsSending] = useState(false);
 
     useEffect(() => {
-        // Save messages to local storage whenever messages change
         localStorage.setItem('chatMessages', JSON.stringify(messages));
 
         socket.on('receiveMessage', (msg) => {
@@ -50,7 +47,7 @@ const Chat = ({ loggedInUser }) => {
             userId: loggedInUser,
             message,
             attachment,
-            timestamp: new Date().toLocaleTimeString()
+            timestamp: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' })
         };
 
         setIsSending(true);
