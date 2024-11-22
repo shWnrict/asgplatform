@@ -46,7 +46,7 @@ const NewMessage = () => {
 
     return (
         <form onSubmit={handleSendSms} className="new-message-container">
-            <h3 className="new-message-title">New Message</h3>
+            <h3 className="new-message-title">Create a New Message</h3>
             <div className="form-group">
                 <label htmlFor="phoneNumber">Phone Number</label>
                 <input

@@ -17,17 +17,23 @@
 /* Controls */
 .inbox-controls {
     display: flex;
+    flex-direction: column; /* Stack items vertically */
     gap: 10px;
     margin-bottom: 20px;
 }
 
 .inbox-search {
-    flex: 1;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+}
+
+.inbox-search:focus {
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    outline: none;
 }
 
 .inbox-filter {
@@ -36,6 +42,12 @@
     border-radius: 5px;
     background-color: white;
     font-size: 14px;
+}
+
+/* Scrollable Messages */
+.inbox-scrollable {
+    max-height: 300px; /* Set the max height for the scrollable container */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 /* List */
@@ -52,11 +64,12 @@
     margin-bottom: 10px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.3s;
 }
 
 .inbox-item:hover {
     transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Message Details */

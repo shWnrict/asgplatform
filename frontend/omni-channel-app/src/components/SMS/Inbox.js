@@ -30,7 +30,6 @@ const Inbox = () => {
 
     return (
         <div className="inbox-container">
-            <h3 className="inbox-title">Inbox</h3>
             <div className="inbox-controls">
                 <input
                     type="text"
@@ -52,21 +51,23 @@ const Inbox = () => {
                     ))}
                 </select>
             </div>
-            <ul className="inbox-list">
-                {filteredMessages.length > 0 ? (
-                    filteredMessages.map((message) => (
-                        <li key={message.sid} className="inbox-item">
-                            <div className="message-header">
-                                <span className="message-sender">{message.from}</span>
-                                <span className="message-date">{new Date(message.dateSent).toLocaleString()}</span>
-                            </div>
-                            <p className="message-body">{message.body}</p>
-                        </li>
-                    ))
-                ) : (
-                    <div className="empty-state">No messages found.</div>
-                )}
-            </ul>
+            <div className="inbox-scrollable">
+                <ul className="inbox-list">
+                    {filteredMessages.length > 0 ? (
+                        filteredMessages.map((message) => (
+                            <li key={message.sid} className="inbox-item">
+                                <div className="message-header">
+                                    <span className="message-sender">{message.from}</span>
+                                    <span className="message-date">{new Date(message.dateSent).toLocaleString()}</span>
+                                </div>
+                                <p className="message-body">{message.body}</p>
+                            </li>
+                        ))
+                    ) : (
+                        <div className="empty-state">No messages found.</div>
+                    )}
+                </ul>
+            </div>
         </div>
     );
 };

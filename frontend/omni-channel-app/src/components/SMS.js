@@ -19,7 +19,6 @@ const SMS = () => {
 
     return (
         <div className="sms-container">
-            <h2 className="sms-title">SMS</h2>
             <div className="sms-tabs">
                 <button
                     className={`sms-tab ${activeSubTab === 'inbox' ? 'active' : ''}`}

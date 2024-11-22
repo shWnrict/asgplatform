@@ -8,15 +8,6 @@
     margin: auto;
 }
 
-/* Title */
-.sms-title {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
-    text-align: center;
-}
-
 /* Tabs */
 .sms-tabs {
     display: flex;
@@ -41,7 +32,7 @@
 }
 
 .sms-tab.active {
-    background-color: #007bff;
+    background-color: #28a745;  /* Green color for active tab */
     color: white;
 }
 
@@ -49,10 +40,6 @@
 @media (max-width: 768px) {
     .sms-container {
         padding: 15px;
-    }
-
-    .sms-title {
-        font-size: 24px;
     }
 
     .sms-tabs {
