@@ -4,7 +4,7 @@ const multer = require('multer');
 const Email = require('../models/Email'); // Import the Email model
 const router = express.Router();
 const upload = multer();
-const { fetchEmails } = require('../services/imapService');
+const { fetchTodaysEmails } = require('../services/imapService'); // Ensure this function is imported correctly
 
 router.post('/send', upload.single('attachment'), async (req, res) => {
     const { to, cc, bcc, subject, body } = req.body;
@@ -41,10 +41,10 @@ router.post('/send', upload.single('attachment'), async (req, res) => {
     }
 });
 
-// Simple route to fetch inbox emails
+// Simple route to fetch today's inbox emails
 router.get('/inbox', async (req, res) => {
     try {
-        const emails = await fetchEmails();
+        const emails = await fetchTodaysEmails();
         res.json(emails);
     } catch (error) {
         console.error('Error fetching emails:', error);
@@ -53,5 +53,3 @@ router.get('/inbox', async (req, res) => {
 });
 
 module.exports = router;
-  
-  module.exports = router;

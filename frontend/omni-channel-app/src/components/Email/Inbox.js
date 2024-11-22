@@ -15,15 +15,14 @@ const Inbox = () => {
             setError(null);
             const response = await axios.get('http://localhost:5000/api/email/inbox');
             if (response.data && Array.isArray(response.data)) {
-                setEmails(response.data);
+                setEmails(response.data.sort((a, b) => new Date(b.date) - new Date(a.date))); // Sort by date
             } else {
                 throw new Error('Invalid response format');
             }
         } catch (error) {
             console.error('Error fetching emails:', error);
             setError(error.message || 'Failed to fetch emails');
-            // Keep the existing emails in case of error
-            setEmails(prevEmails => prevEmails);
+            setEmails(prevEmails => prevEmails); // Keep the existing emails in case of error
         } finally {
             setLoading(false);
         }
