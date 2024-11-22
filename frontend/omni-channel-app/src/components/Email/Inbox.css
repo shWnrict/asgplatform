@@ -103,3 +103,20 @@
     font-size: 1.2em;
     color: #666;
 }
+
+.loading-overlay {
+    padding: 10px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.error-container {
+    padding: 20px;
+    text-align: center;
+    color: red;
+}
+
+.email-controls {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}

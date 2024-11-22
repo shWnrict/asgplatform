@@ -1,14 +1,11 @@
-// backend/services/imapService.js
 const Imap = require('imap');
 const { simpleParser } = require('mailparser');
 
 function formatEmailAddress(address) {
     if (!address) return '';
     
-    // If it's already a string, return it
     if (typeof address === 'string') return address;
     
-    // If it's an array of address objects
     if (Array.isArray(address)) {
         return address.map(addr => {
             if (typeof addr === 'string') return addr;
@@ -16,7 +13,6 @@ function formatEmailAddress(address) {
         }).join(', ');
     }
     
-    // If it's a single address object
     if (typeof address === 'object') {
         if (address.text) return address.text;
         if (address.value) {
@@ -36,7 +32,13 @@ const imapConfig = {
     host: 'imap.gmail.com',
     port: 993,
     tls: true,
-    tlsOptions: { rejectUnauthorized: false }
+    tlsOptions: { rejectUnauthorized: false },
+    authTimeout: 3000,
+    keepalive: {
+        interval: 60000, // 60 seconds
+        idleInterval: 60000,
+        forceNoop: true
+    }
 };
 
 async function fetchEmails() {
@@ -46,64 +48,96 @@ async function fetchEmails() {
             const emails = [];
 
             imap.once('ready', () => {
-                imap.openBox('INBOX', false, (err, box) => {
-                    if (err) throw err;
+                imap.openBox('INBOX', false, async (err, box) => {
+                    if (err) {
+                        console.error('Error opening inbox:', err);
+                        reject(err);
+                        return;
+                    }
 
-                    // Fetch emails from the last 30 days
                     const date = new Date();
                     date.setDate(date.getDate() - 30);
-                    
-                    // Search for emails
-                    imap.search(['ALL', ['SINCE', date]], (err, results) => {
-                        if (err) throw err;
+
+                    imap.search([['SINCE', date]], (err, results) => {
+                        if (err) {
+                            console.error('Search error:', err);
+                            reject(err);
+                            return;
+                        }
+
+                        console.log('Search results:', results);
 
                         if (!results || !results.length) {
+                            console.log('No emails found');
                             imap.end();
                             resolve([]);
                             return;
                         }
 
+                        console.log(`Found ${results.length} emails`);
+
                         const fetch = imap.fetch(results, {
                             bodies: '',
-                            markSeen: false
+                            markSeen: false,
+                            struct: true
                         });
 
-                        fetch.on('message', (msg) => {
-                            msg.on('body', (stream) => {
-                                simpleParser(stream, async (err, parsed) => {
-                                    if (err) return console.error(err);
+                        const promises = results.map(seqno => {
+                            return new Promise((resolve, reject) => {
+                                const f = imap.fetch(seqno, { bodies: '' });
+                                f.on('message', (msg) => {
+                                    msg.on('body', (stream) => {
+                                        simpleParser(stream, (err, parsed) => {
+                                            if (err) {
+                                                console.error(`Error parsing message #${seqno}:`, err);
+                                                reject(err);
+                                                return;
+                                            }
 
-                                    try {
-                                        const emailData = {
-                                            id: parsed.messageId,
-                                            from: parsed.from ? formatEmailAddress(parsed.from) : '',
-                                            to: parsed.to ? formatEmailAddress(parsed.to) : '',
-                                            subject: parsed.subject || '(No Subject)',
-                                            body: parsed.text || '',
-                                            html: parsed.html,
-                                            date: parsed.date,
-                                            isRead: !parsed.flags?.includes('\\Seen'),
-                                            attachments: parsed.attachments || []
-                                        };
+                                            try {
+                                                const emailData = {
+                                                    id: parsed.messageId || `${Date.now()}-${seqno}`,
+                                                    from: parsed.from ? formatEmailAddress(parsed.from) : '',
+                                                    to: parsed.to ? formatEmailAddress(parsed.to) : '',
+                                                    cc: parsed.cc ? formatEmailAddress(parsed.cc) : '',
+                                                    subject: parsed.subject || '(No Subject)',
+                                                    body: parsed.text || '',
+                                                    html: parsed.html,
+                                                    date: parsed.date,
+                                                    isRead: parsed.flags ? !parsed.flags.includes('\\Seen') : true,
+                                                    attachments: parsed.attachments || [],
+                                                    seqno: seqno
+                                                };
 
-                                        emails.push(emailData);
-                                    } catch (error) {
-                                        console.error('Error processing email:', error);
-                                    }
+                                                emails.push(emailData);
+                                                console.log(`Processed email #${emails.length} of ${results.length}`);
+                                                resolve();
+                                            } catch (error) {
+                                                console.error(`Error processing email #${seqno}:`, error);
+                                                reject(error);
+                                            }
+                                        });
+                                    });
+                                });
+
+                                f.once('error', (err) => {
+                                    console.error('Fetch error:', err);
+                                    reject(err);
                                 });
                             });
                         });
 
-                        fetch.once('error', (err) => {
-                            console.error('Fetch error:', err);
-                        });
-
-                        fetch.once('end', () => {
-                            imap.end();
-                            // Sort emails by date, newest first
-                            emails.sort((a, b) => b.date - a.date);
-                            resolve(emails);
-                        });
+                        Promise.all(promises)
+                            .then(() => {
+                                emails.sort((a, b) => b.date - a.date);
+                                imap.end();
+                                resolve(emails);
+                            })
+                            .catch(err => {
+                                console.error('Error processing emails:', err);
+                                imap.end();
+                                reject(err);
+                            });
                     });
                 });
             });
@@ -118,6 +152,7 @@ async function fetchEmails() {
             });
 
             imap.connect();
+
         } catch (err) {
             console.error('Error in fetchEmails:', err);
             reject(err);
