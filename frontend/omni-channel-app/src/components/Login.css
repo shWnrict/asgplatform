@@ -4,22 +4,70 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 50vh; /* Make the login container fill the full height of the viewport */
+    background-color: #f3f4f6;
+    font-family: 'Arial', sans-serif;
+    padding: 20px; /* Add padding around the content */
+    box-sizing: border-box; /* Ensure padding is included in the total width and height */
 }
 
-.login-container h2 {
-    margin-bottom: 20px;
+h2 {
+    font-size: 32px;
+    margin-bottom: 20px; /* Adjust margin to better align with the inputs */
+    color: #333;
+    text-align: center; /* Center the header text */
 }
 
-.login-container input {
-    margin-bottom: 10px;
-    padding: 10px;
-    width: 200px;
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center align items in the form */
 }
 
-.login-container button {
-    padding: 10px;
+.input-field {
+    padding: 12px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box; /* Ensure padding doesn't affect the element's width */
 }
+
+.input-field:focus {
+    border-color: #2563eb;
+    outline: none;
+}
+
+.login-btn {
+    padding: 12px;
+    width: 100%;
+    max-width: 300px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box; /* Ensure button width is consistent with input fields */
+}
+
+.login-btn:hover {
+    background-color: #1d4ed8;
+}
+
+.login-btn:focus {
+    outline: none;
+}
+
 .error {
-    color: red;
+    color: #e11d48;
+    font-size: 14px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 300px;
+    text-align: center; /* Center align error message */
 }

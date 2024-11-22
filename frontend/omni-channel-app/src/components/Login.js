@@ -28,10 +28,11 @@ const Login = ({ onLogin }) => {
 
     return (
         <div className="login-container">
-            <h2>Login</h2>
+            <h2>Account details</h2>
             {error && <p className="error">{error}</p>}
             <form onSubmit={handleSubmit}>
                 <input
+                    className="input-field"
                     type="text"
                     placeholder="Username"
                     value={username}
@@ -39,13 +40,14 @@ const Login = ({ onLogin }) => {
                     required
                 />
                 <input
+                    className="input-field"
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Login</button>
+                <button className="login-btn" type="submit">Login</button>
             </form>
         </div>
     );

@@ -1,0 +1,39 @@
+/* src/components/Home.css */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    background-color: #f3f4f6;
+    font-family: 'Arial', sans-serif;
+}
+
+h2 {
+    font-size: 24px;
+    color: #333;
+}
+
+.user-name {
+    color: #2563eb;
+    font-weight: bold;
+}
+
+.logout-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #f87171;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #e11d48;
+}
+
+.logout-btn:focus {
+    outline: none;
+}

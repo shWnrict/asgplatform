@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import './App.css';
 import Navigation from './components/Navigation';
 import Chat from './components/Chat';
@@ -25,35 +25,51 @@ const App = () => {
 
     return (
         <Router>
-            <div className="app-container">
-                {/* Header Section */}
+            <AppContent 
+                activeTab={activeTab} 
+                setActiveTab={setActiveTab} 
+                user={user} 
+                handleLogin={handleLogin} 
+                handleLogout={handleLogout} 
+            />
+        </Router>
+    );
+};
+
+const AppContent = ({ activeTab, setActiveTab, user, handleLogin, handleLogout }) => {
+    const location = useLocation();
+
+    return (
+        <div className="app-container">
+            {/* Conditionally render the header */}
+            {location.pathname !== '/login' && (
                 <div className="header">
                     <h1 className="app-title">Omni-Channel Communication App</h1>
                     <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
                 </div>
-                <Routes>
-                    <Route path="/login" element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
-                    <Route
-                        path="/"
-                        element={
-                            user ? (
-                                <>
-                                    <div className="content-container">
-                                        {activeTab === 'home' && <Home onLogout={handleLogout} loggedInUser={user} />}
-                                        {activeTab === 'chat' && <Chat loggedInUser={user} />}
-                                        {activeTab === 'email' && <Email />}
-                                        {activeTab === 'sms' && <SMS />}
-                                        {activeTab === 'call' && <Call />}
-                                    </div>
-                                </>
-                            ) : (
-                                <Navigate to="/login" />
-                            )
-                        }
-                    />
-                </Routes>
-            </div>
-        </Router>
+            )}
+            <Routes>
+                <Route path="/login" element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
+                <Route
+                    path="/"
+                    element={
+                        user ? (
+                            <>
+                                <div className="content-container">
+                                    {activeTab === 'home' && <Home onLogout={handleLogout} loggedInUser={user} />}
+                                    {activeTab === 'chat' && <Chat loggedInUser={user} />}
+                                    {activeTab === 'email' && <Email />}
+                                    {activeTab === 'sms' && <SMS />}
+                                    {activeTab === 'call' && <Call />}
+                                </div>
+                            </>
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+            </Routes>
+        </div>
     );
 };
 
