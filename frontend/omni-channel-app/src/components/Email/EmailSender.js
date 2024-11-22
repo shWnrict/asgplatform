@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import ReactQuill from 'react-quill'; // Import the rich text editor
+import 'react-quill/dist/quill.snow.css'; // Import styles for the editor
+import './EmailSender.css'; // Create a CSS file for styling
 
 const EmailSender = ({ onEmailSent }) => {
     const [recipient, setRecipient] = useState('');
@@ -11,10 +14,11 @@ const EmailSender = ({ onEmailSent }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!recipient) {
-            alert('Recipient email is required!');
+        if (!recipient || !subject || !body) {
+            alert('Recipient, subject, and body are required!');
             return;
         }
+
         const formData = new FormData();
         formData.append('to', recipient);
         if (cc) formData.append('cc', cc);
@@ -32,7 +36,14 @@ const EmailSender = ({ onEmailSent }) => {
                 },
             });
             alert('Email sent successfully!');
-            onEmailSent(); // Call this function to refresh the inbox or update state
+            onEmailSent(); // Callback to refresh inbox or sent items
+            // Reset fields after sending
+            setRecipient('');
+            setCc('');
+            setBcc('');
+            setSubject('');
+            setBody('');
+            setAttachment(null);
         } catch (error) {
             console.error(error);
             alert('Failed to send email.');
@@ -40,16 +51,44 @@ const EmailSender = ({ onEmailSent }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Send Email</h2>
-            <input type="email" placeholder="Recipient" onChange={(e) => setRecipient(e.target.value)} required />
-            <input type="email" placeholder="CC" onChange={(e) => setCc(e.target.value)} />
-            <input type="email" placeholder="BCC" onChange={(e) => setBcc(e.target.value)} />
-            <input type="text" placeholder="Subject" onChange={(e) => setSubject(e.target.value)} required />
-            <textarea placeholder="Body" onChange={(e) => setBody(e.target.value)} required></textarea>
-            <input type="file" onChange={(e) => setAttachment(e.target.files[0])} />
-            <button type="submit">Send Email</button>
-        </form>
+        <div className="compose-email-container">
+            <h2>Compose Email</h2>
+            <form onSubmit={handleSubmit}>
+                <input 
+                    type="email" 
+                    placeholder="To" 
+                    value={recipient} 
+                    onChange={(e) => setRecipient(e.target.value)} 
+                    required 
+                />
+                <input 
+                    type="text" 
+                    placeholder="CC" 
+                    value={cc} 
+                    onChange={(e) => setCc(e.target.value)} 
+                />
+                <input 
+                    type="text" 
+                    placeholder="BCC" 
+                    value={bcc} 
+                    onChange={(e) => setBcc(e.target.value)} 
+                />
+                <input 
+                    type="text" 
+                    placeholder="Subject" 
+                    value={subject} 
+                    onChange={(e) => setSubject(e.target.value)} 
+                    required 
+                />
+                {/* Rich Text Editor for Email Body */}
+                <ReactQuill value={body} onChange={setBody} placeholder="Compose your message here..." />
+                <input 
+                    type="file" 
+                    onChange={(e) => setAttachment(e.target.files[0])} 
+                />
+                <button type="submit">Send</button>
+            </form>
+        </div>
     );
 };
 
