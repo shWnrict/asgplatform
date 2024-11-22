@@ -1,14 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Inbox = () => {
+    const [messages, setMessages] = useState([]);
+
+    const fetchMessages = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/sms/history');
+            setMessages(response.data);
+        } catch (error) {
+            console.error(error);
+            alert('Failed to fetch message history.');
+        }
+    };
+
+    useEffect(() => {
+        fetchMessages();
+    }, []);
+
     return (
         <div>
             <h3>Inbox</h3>
-            {/* Display list of received SMS messages here */}
-            {/* Example static message */}
             <ul>
-                <li>Message 1 from +1234567890: Hello!</li>
-                {/* Add more messages */}
+                {messages.map((message) => (
+                    <li key={message.sid}>
+                        From: {message.from} <br />
+                        To: {message.to} <br />
+                        Message: {message.body} <br />
+                        Date Sent: {new Date(message.dateSent).toLocaleString()} <br />
+                        <hr />
+                    </li>
+                ))}
             </ul>
         </div>
     );

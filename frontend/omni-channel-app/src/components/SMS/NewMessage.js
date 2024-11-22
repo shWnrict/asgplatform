@@ -11,15 +11,15 @@ const NewMessage = () => {
             alert('Please enter both phone number and message.');
             return;
         }
-
+    
         try {
-            await axios.post('http://localhost:5000/api/sms/send', { to: phoneNumber, body: message });
-            alert('SMS sent successfully!');
+            const response = await axios.post('http://localhost:5000/api/sms/send', { to: phoneNumber, body: message });
+            alert(response.data); // Display success message
             setPhoneNumber('');
             setMessage('');
         } catch (error) {
-            console.error(error);
-            alert('Failed to send SMS.');
+            console.error('Error sending SMS:', error); // Log detailed error
+            alert('Failed to send SMS: ' + error.response?.data || error.message);
         }
     };
 

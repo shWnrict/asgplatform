@@ -1,3 +1,4 @@
+// Import necessary modules
 const express = require('express');
 const twilio = require('twilio');
 const router = express.Router();
@@ -13,7 +14,20 @@ router.post('/send', (req, res) => {
         to,
     })
     .then(message => res.status(200).send(`SMS sent successfully! Message SID: ${message.sid}`))
-    .catch(error => res.status(500).send(`Error sending SMS: ${error.message}`));
+    .catch(error => {
+        console.error('Twilio Error:', error); // Log the error for debugging
+        res.status(500).send(`Error sending SMS: ${error.message}`);
+    });
+});
+
+// New route to fetch message history
+router.get('/history', async (req, res) => {
+    try {
+        const messages = await client.messages.list({ limit: 20 }); // Adjust limit as needed
+        res.status(200).json(messages);
+    } catch (error) {
+        res.status(500).send(`Error fetching message history: ${error.message}`);
+    }
 });
 
 module.exports = router;
