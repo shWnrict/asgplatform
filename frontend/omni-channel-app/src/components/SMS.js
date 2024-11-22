@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import Inbox from './SMS/Inbox'; // Create this component later
-import NewMessage from './SMS/NewMessage'; // Create this component later
+import Inbox from './SMS/Inbox'; // Ensure Inbox component is updated
+import NewMessage from './SMS/NewMessage'; // Ensure NewMessage component is updated
+import './SMS.css';
 
 const SMS = () => {
     const [activeSubTab, setActiveSubTab] = useState('inbox');
@@ -17,11 +18,21 @@ const SMS = () => {
     };
 
     return (
-        <div>
-            <h2>SMS</h2>
+        <div className="sms-container">
+            <h2 className="sms-title">SMS</h2>
             <div className="sms-tabs">
-                <button onClick={() => setActiveSubTab('inbox')}>Inbox</button>
-                <button onClick={() => setActiveSubTab('new')}>New Message</button>
+                <button
+                    className={`sms-tab ${activeSubTab === 'inbox' ? 'active' : ''}`}
+                    onClick={() => setActiveSubTab('inbox')}
+                >
+                    Inbox
+                </button>
+                <button
+                    className={`sms-tab ${activeSubTab === 'new' ? 'active' : ''}`}
+                    onClick={() => setActiveSubTab('new')}
+                >
+                    New Message
+                </button>
             </div>
             {renderSMSContent()}
         </div>

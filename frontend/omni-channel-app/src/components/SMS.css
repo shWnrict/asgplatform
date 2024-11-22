@@ -1,0 +1,67 @@
+/* SMS Container */
+.sms-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Title */
+.sms-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+/* Tabs */
+.sms-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.sms-tab {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sms-tab:hover {
+    background-color: #ddd;
+}
+
+.sms-tab.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sms-container {
+        padding: 15px;
+    }
+
+    .sms-title {
+        font-size: 24px;
+    }
+
+    .sms-tabs {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sms-tab {
+        width: 100%;
+        text-align: center;
+    }
+}
