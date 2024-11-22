@@ -6,8 +6,8 @@ const emailSchema = new mongoose.Schema({
     bcc: { type: String },
     subject: { type: String, required: true },
     body: { type: String, required: true },
-    attachment: { type: String }, // URL or path to the attachment if stored
-    sentAt: { type: Date, default: Date.now }, // Timestamp of when the email was sent
+    attachments: [{ filename: String, url: String }], // Updated to support multiple attachments
+    sentAt: { type: Date, default: Date.now },
 });
 
 const Email = mongoose.model('Email', emailSchema);

@@ -10,41 +10,45 @@ const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
     const [bcc, setBcc] = useState('');
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
-    const [attachment, setAttachment] = useState(null);
+    const [attachments, setAttachments] = useState([]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         if (!recipient || !subject || !body) {
             alert('Recipient, subject, and body are required!');
             return;
         }
-
+        
         const formData = new FormData();
         formData.append('to', recipient);
+        
         if (cc) formData.append('cc', cc);
         if (bcc) formData.append('bcc', bcc);
+        
         formData.append('subject', subject);
         formData.append('body', body);
-        if (attachment) {
-            formData.append('attachment', attachment);
-        }
-
+        
+        attachments.forEach(file => {
+            formData.append('attachments', file); // Append each attachment
+        });
+    
         try {
             await axios.post('http://localhost:5000/api/email/send', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
+            
             alert('Email sent successfully!');
-            onEmailSent(); // Callback to refresh inbox or sent items
-            setActiveSubTab('sent'); // Switch to Sent Items tab after sending
+            onEmailSent(); 
+            setActiveSubTab('sent'); 
+            
             // Reset fields after sending
             setRecipient('');
             setCc('');
             setBcc('');
             setSubject('');
             setBody('');
-            setAttachment(null);
+            setAttachments([]); // Reset attachments
         } catch (error) {
             console.error(error);
             alert('Failed to send email.');
@@ -85,7 +89,8 @@ const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
                 <ReactQuill value={body} onChange={setBody} placeholder="Compose your message here..." />
                 <input 
                     type="file" 
-                    onChange={(e) => setAttachment(e.target.files[0])} 
+                    multiple 
+                    onChange={(e) => setAttachments(Array.from(e.target.files))} 
                 />
                 <button type="submit">Send</button>
             </form>

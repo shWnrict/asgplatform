@@ -6,9 +6,9 @@ const router = express.Router();
 const upload = multer();
 const { fetchTodaysEmails, fetchTodaysSentEmails } = require('../services/imapService'); // Ensure this function is imported correctly
 
-router.post('/send', upload.single('attachment'), async (req, res) => {
+router.post('/send', upload.array('attachments'), async (req, res) => {
     const { to, cc, bcc, subject, body } = req.body;
-    const attachment = req.file;
+    const attachments = req.files; // Changed to handle multiple files
 
     if (!to || !subject || !body) {
         return res.status(400).send('Recipient, subject, and body are required!');
@@ -22,6 +22,12 @@ router.post('/send', upload.single('attachment'), async (req, res) => {
         },
     });
 
+    // Prepare attachments for nodemailer
+    const mailAttachments = attachments.map(file => ({
+        filename: file.originalname,
+        content: file.buffer,
+    }));
+
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to,
@@ -29,11 +35,27 @@ router.post('/send', upload.single('attachment'), async (req, res) => {
         bcc: bcc || undefined,
         subject,
         text: body,
-        attachments: attachment ? [{ filename: attachment.originalname, content: attachment.buffer }] : [],
+        attachments: mailAttachments, // Use the prepared attachments
     };
 
     try {
         await transporter.sendMail(mailOptions);
+        
+        // Save email with attachment information in the database
+        const savedEmail = new Email({
+            to,
+            cc,
+            bcc,
+            subject,
+            body,
+            attachments: mailAttachments.map(file => ({
+                filename: file.filename,
+                url: `path/to/your/storage/${file.filename}`, // Adjust this path as needed
+            })),
+        });
+        
+        await savedEmail.save();
+        
         res.status(200).send('Email sent successfully!');
     } catch (error) {
         console.error('Error sending email:', error);

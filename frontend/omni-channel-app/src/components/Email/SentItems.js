@@ -115,7 +115,7 @@ const SentItems = () => {
                             <h4>Attachments:</h4>
                             {selectedEmail.attachments.map((attachment, index) => (
                                 <div key={index} className="attachment">
-                                    📎 {attachment.filename}
+                                    <a href={attachment.url} download>{attachment.filename} 📎</a>
                                 </div>
                             ))}
                         </div>
