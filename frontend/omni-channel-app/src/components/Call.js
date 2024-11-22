@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './DialPad.css'; // Make sure to import the CSS
+import './DialPad.css'; // Ensure you have the CSS imported
 
 const Call = () => {
     const [dialNumber, setDialNumber] = useState('');
@@ -10,17 +10,18 @@ const Call = () => {
             alert('Please enter a number to call.');
             return;
         }
-        
+    
         try {
-            const response = await axios.post('http://localhost:5000/api/call', { to: dialNumber });
+            const response = await axios.post('http://localhost:5000/api/call/make', { to: dialNumber });
             alert(response.data); // Display success message
         } catch (error) {
             console.error('Error making call:', error);
             alert('Failed to make call: ' + error.response?.data || error.message);
         }
-
+    
         setDialNumber(''); // Clear the number after dialing
     };
+    
 
     const handleButtonClick = (num) => {
         setDialNumber((prev) => prev + num);
@@ -42,7 +43,9 @@ const Call = () => {
                     className="dial-input"
                 />
                 <div className="button-grid">
-                    {['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'].map((num) => (
+                    {/* Added '+' button */}
+                    <button onClick={() => handleButtonClick('+')} className="dial-button">+</button>
+                    {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '#'].map((num) => (
                         <button key={num} onClick={() => handleButtonClick(num)} className="dial-button">{num}</button>
                     ))}
                 </div>

@@ -111,18 +111,24 @@ const Inbox = () => {
                     </div>
                     {selectedEmail.attachments?.length > 0 && (
                         <div className="attachments">
-                            <h4>Attachments:</h4>
-                            {selectedEmail.attachments.map((attachment, index) => (
-                                <div key={index} className="attachment">
-                                    <a
-                                        href={attachment.downloadUrl} // Use downloadUrl instead of url
-                                        download={attachment.filename}
-                                        className="attachment-link"
-                                    >
-                                        📎 {attachment.filename} ({Math.round(attachment.size / 1024)} KB)
-                                    </a>
+                            {selectedEmail.attachments?.length > 0 && (
+                                <div className="attachments">
+                                    <h4>Attachments:</h4>
+                                    {selectedEmail.attachments.map((attachment, index) => (
+                                        <div key={index} className="attachment">
+                                            <a
+                                                href={attachment.downloadUrl} // The backend must provide a valid, accessible URL
+                                                target="_blank"
+                                                rel="noopener noreferrer" // Prevents security risks
+                                                download={attachment.filename || 'attachment'} // Provide a fallback filename
+                                                className="attachment-link"
+                                            >
+                                                📎 {attachment.filename} ({Math.round(attachment.size / 1024)} KB)
+                                            </a>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            )}
                         </div>
                     )}
 

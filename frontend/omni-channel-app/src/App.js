@@ -9,6 +9,7 @@ import Call from './components/Call';
 import Home from './components/Home';
 import Login from './components/Login';
 
+
 const App = () => {
     const [activeTab, setActiveTab] = useState('home');
     const [user, setUser] = useState(() => localStorage.getItem('loggedInUser'));

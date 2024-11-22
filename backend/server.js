@@ -82,6 +82,8 @@ app.use('/api/sms', require('./routes/sms'));
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/call', require('./routes/calls'));
 app.use('/api/incoming-call', require('./routes/incoming-call'));
+app.use('/api/twiml', require('./routes/twiml'));
+
 
 // Start server
 const PORT = process.env.PORT || 5000;
