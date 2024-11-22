@@ -103,10 +103,12 @@ const Chat = ({ loggedInUser }) => {
                 />
                 <input
                     type="file"
+                    id="file-input"
                     onChange={handleFileChange}
                 />
+                <label htmlFor="file-input">📎 Attach</label>
                 {attachment && <div className="attachment-preview"><p>{attachment.name}</p></div>}
-                <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😊</button>
+                <button type="button" className="emoji-btn" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😊</button>
                 {showEmojiPicker && (
                     <EmojiPicker onEmojiClick={handleEmojiClick} />
                 )}

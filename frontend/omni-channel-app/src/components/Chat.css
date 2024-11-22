@@ -1,92 +1,164 @@
+/* Main Chat Container */
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    max-width: 600px;
+    height: 70vh;  /* Reduced height to 70% of the viewport height */
+    max-width: 700px;
     margin: 0 auto;
-    background-color: #f7f7f7;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    font-family: 'Arial', sans-serif;
 }
 
+/* Messages Section */
 .messages {
     flex: 1;
-    padding: 10px;
+    padding: 20px;
     overflow-y: auto;
     background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
+/* Individual Message Styles */
 .message-bubble {
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 8px;
+    max-width: 70%;
+    padding: 12px;
+    border-radius: 20px;
+    position: relative;
+    word-wrap: break-word;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Outgoing Messages */
 .my-message {
-    background-color: #d1ffd6;
+    background-color: #e0ffe7;
     align-self: flex-end;
+    color: #0a582e;
 }
 
+/* Incoming Messages */
 .admin-message {
-    background-color: #d1d1ff;
+    background-color: #e0e7ff;
     align-self: flex-start;
+    color: #1a3a6c;
 }
 
+/* Timestamp */
 .timestamp {
-    font-size: 0.8rem;
-    color: #666;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 4px;
+    display: block;
+    text-align: right;
 }
 
+/* Typing Indicator */
 .typing-indicator {
     font-style: italic;
-    color: #aaa;
+    color: #9ca3af;
+    text-align: center;
+    margin-top: 10px;
 }
 
+/* Chat Input Area */
 .chat-form {
     display: flex;
-    padding: 10px;
-    border-top: 1px solid #ccc;
-    background-color: #f9f9f9;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
 }
 
+/* Text Input */
 .chat-form input[type="text"] {
     flex: 1;
-    padding: 10px;
-    margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px 15px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
 }
 
+/* Focus Effect for Text Input */
+.chat-form input[type="text"]:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 4px rgba(37, 99, 235, 0.4);
+}
+
+/* File Input (Hidden) */
 .chat-form input[type="file"] {
     display: none;
 }
 
+/* File Upload Button */
 .chat-form label[for="file-input"] {
-    cursor: pointer;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #e1e1e1;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #f3f4f6;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.chat-form button {
-    padding: 10px;
+.chat-form label[for="file-input"]:hover {
+    background-color: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+/* Emoji Picker Button */
+.chat-form button.emoji-btn {
+    padding: 10px 12px;
+    font-size: 18px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
+    background-color: #f3f4f6;
     cursor: pointer;
-    background-color: #007bff;
+    transition: background-color 0.3s ease;
+}
+
+.chat-form button.emoji-btn:hover {
+    background-color: #e5e7eb;
+}
+
+/* Send Button */
+.chat-form button[type="submit"] {
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #2563eb;
     color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.chat-form button:disabled {
-    background-color: #ccc;
+.chat-form button[type="submit"]:hover {
+    background-color: #1d4ed8;
 }
 
+.chat-form button[type="submit"]:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Attachment Preview */
 .attachment-preview {
-    margin-top: 5px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
+    padding: 8px;
+    font-size: 14px;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    margin-top: 10px;
 }
