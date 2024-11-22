@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import EmojiPicker from 'emoji-picker-react';
 import './Chat.css';
@@ -15,10 +15,13 @@ const Chat = ({ loggedInUser }) => {
     const [isTyping, setIsTyping] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [isSending, setIsSending] = useState(false);
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
         localStorage.setItem('chatMessages', JSON.stringify(messages));
+    }, [messages]);
 
+    useEffect(() => {
         socket.on('receiveMessage', (msg) => {
             setMessages((prevMessages) => [...prevMessages, msg]);
             setIsTyping(false);
@@ -37,6 +40,10 @@ const Chat = ({ loggedInUser }) => {
             socket.off('typing');
             socket.off('stopTyping');
         };
+    }, []);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
     const handleSendMessage = async (e) => {
@@ -90,6 +97,7 @@ const Chat = ({ loggedInUser }) => {
                     </div>
                 ))}
                 {isTyping && <div className="typing-indicator">{loggedInUser === "admin" ? "User is typing..." : "Admin is typing..."}</div>}
+                <div ref={messagesEndRef} />
             </div>
             <form onSubmit={handleSendMessage} className="chat-form">
                 <input

@@ -8,10 +8,12 @@ import SMS from './components/SMS';
 import Call from './components/Call';
 import Home from './components/Home';
 import Login from './components/Login';
+import CallPopup from './components/CallPopup';  // Import CallPopup component
 
 const App = () => {
     const [activeTab, setActiveTab] = useState('home');
     const [user, setUser] = useState(() => localStorage.getItem('loggedInUser'));
+    const [isCallPopupVisible, setIsCallPopupVisible] = useState(false);  // Manage CallPopup visibility
 
     const handleLogout = () => {
         localStorage.removeItem('loggedInUser');
@@ -23,20 +25,34 @@ const App = () => {
         setActiveTab('home');
     };
 
+    const toggleCallPopup = () => {
+        setIsCallPopupVisible(!isCallPopupVisible);  // Toggle the popup visibility
+    };
+
     return (
         <Router>
-            <AppContent 
-                activeTab={activeTab} 
-                setActiveTab={setActiveTab} 
-                user={user} 
-                handleLogin={handleLogin} 
-                handleLogout={handleLogout} 
+            <AppContent
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                user={user}
+                handleLogin={handleLogin}
+                handleLogout={handleLogout}
+                isCallPopupVisible={isCallPopupVisible}  // Pass state to child components
+                toggleCallPopup={toggleCallPopup}        // Function to toggle popup visibility
             />
         </Router>
     );
 };
 
-const AppContent = ({ activeTab, setActiveTab, user, handleLogin, handleLogout }) => {
+const AppContent = ({
+    activeTab,
+    setActiveTab,
+    user,
+    handleLogin,
+    handleLogout,
+    isCallPopupVisible,
+    toggleCallPopup
+}) => {
     const location = useLocation();
 
     return (
@@ -48,6 +64,10 @@ const AppContent = ({ activeTab, setActiveTab, user, handleLogin, handleLogout }
                     <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
                 </div>
             )}
+
+            {/* CallPopup will be visible based on the state */}
+            {isCallPopupVisible && <CallPopup onClose={toggleCallPopup} />}
+
             <Routes>
                 <Route path="/login" element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
                 <Route
@@ -60,7 +80,7 @@ const AppContent = ({ activeTab, setActiveTab, user, handleLogin, handleLogout }
                                     {activeTab === 'chat' && <Chat loggedInUser={user} />}
                                     {activeTab === 'email' && <Email />}
                                     {activeTab === 'sms' && <SMS />}
-                                    {activeTab === 'call' && <Call />}
+                                    {activeTab === 'call' && <Call onIncomingCall={toggleCallPopup} />} {/* Optionally trigger popup on incoming call */}
                                 </div>
                             </>
                         ) : (

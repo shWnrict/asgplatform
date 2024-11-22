@@ -1,0 +1,64 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import io from 'socket.io-client';
+import './Call.css';
+
+const CallPopup = () => {
+    const [isVisible, setIsVisible] = useState(false);
+    const [incomingCall, setIncomingCall] = useState(null);
+    const [socket, setSocket] = useState(null);
+
+    useEffect(() => {
+        const newSocket = io('http://localhost:5000');
+        setSocket(newSocket);
+
+        newSocket.on('callNotification', (callDetails) => {
+            setIncomingCall(callDetails);
+            setIsVisible(true);
+        });
+
+        return () => newSocket.close();
+    }, []);
+
+    const handleCallResponse = async (action) => {
+        if (!socket || !incomingCall) return;
+
+        try {
+            await axios.post(`http://localhost:5000/api/call/${action}`, {
+                callSid: incomingCall.callSid
+            });
+
+            socket.emit(action === 'accept' ? 'acceptCall' : 'rejectCall', incomingCall.callSid);
+            setIsVisible(false);
+        } catch (error) {
+            console.error(`${action} call error:`, error);
+        }
+    };
+
+    if (!isVisible) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-xl">
+                <h2 className="text-xl mb-4">Incoming Call</h2>
+                <p>From: {incomingCall?.from}</p>
+                <div className="flex justify-between mt-4">
+                    <button 
+                        onClick={() => handleCallResponse('accept')}
+                        className="bg-green-500 text-white px-4 py-2 rounded"
+                    >
+                        Accept
+                    </button>
+                    <button 
+                        onClick={() => handleCallResponse('reject')}
+                        className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                        Reject
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default CallPopup;
