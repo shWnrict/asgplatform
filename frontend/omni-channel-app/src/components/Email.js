@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Inbox from './Email/Inbox'; // Keep Inbox component
-import SentItems from './Email/SentItems'; // Import SentItems component
+import Inbox from './Email/Inbox';
+import SentItems from './Email/SentItems';
 import EmailSender from './Email/EmailSender';
 
 const Email = () => {
@@ -11,9 +11,9 @@ const Email = () => {
       case 'inbox':
         return <Inbox />;
       case 'sent':
-        return <SentItems />; // Render SentItems component
+        return <SentItems />;
       case 'compose':
-        return <EmailSender onEmailSent={() => setActiveSubTab('inbox')} />;
+        return <EmailSender onEmailSent={() => setActiveSubTab('inbox')} setActiveSubTab={setActiveSubTab} />;
       default:
         return <Inbox />;
     }
@@ -24,7 +24,7 @@ const Email = () => {
       <h2>Email</h2>
       <div className="email-tabs">
         <button onClick={() => setActiveSubTab('inbox')}>Inbox</button>
-        <button onClick={() => setActiveSubTab('sent')}>Sent Items</button> {/* New button for Sent Items */}
+        <button onClick={() => setActiveSubTab('sent')}>Sent Items</button>
         <button onClick={() => setActiveSubTab('compose')}>Compose Email</button>
       </div>
       {renderEmailContent()}

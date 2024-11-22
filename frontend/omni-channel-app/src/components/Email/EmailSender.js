@@ -4,7 +4,7 @@ import ReactQuill from 'react-quill'; // Import the rich text editor
 import 'react-quill/dist/quill.snow.css'; // Import styles for the editor
 import './EmailSender.css'; // Create a CSS file for styling
 
-const EmailSender = ({ onEmailSent }) => {
+const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
     const [recipient, setRecipient] = useState('');
     const [cc, setCc] = useState('');
     const [bcc, setBcc] = useState('');
@@ -37,6 +37,7 @@ const EmailSender = ({ onEmailSent }) => {
             });
             alert('Email sent successfully!');
             onEmailSent(); // Callback to refresh inbox or sent items
+            setActiveSubTab('sent'); // Switch to Sent Items tab after sending
             // Reset fields after sending
             setRecipient('');
             setCc('');
