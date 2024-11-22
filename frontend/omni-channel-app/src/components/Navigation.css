@@ -1,0 +1,41 @@
+/* Navigation Container */
+.navigation-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* Navigation Button */
+.navigation-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.navigation-btn:hover {
+    background-color: #ddd;
+    transform: translateY(-2px);
+}
+
+.navigation-btn.active {
+    background-color: #28a745; /* Changed active button color to a green shade */
+    color: white;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .navigation-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .navigation-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

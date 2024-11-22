@@ -1,13 +1,39 @@
 import React from 'react';
+import './Navigation.css';
 
 const Navigation = ({ activeTab, setActiveTab }) => {
     return (
-        <div className="navigation">
-            <button onClick={() => setActiveTab('home')}>Home</button>
-            <button onClick={() => setActiveTab('chat')}>Chat</button>
-            <button onClick={() => setActiveTab('email')}>Email</button>
-            <button onClick={() => setActiveTab('sms')}>SMS</button>
-            <button onClick={() => setActiveTab('call')}>Call</button>
+        <div className="navigation-container">
+            <button
+                className={`navigation-btn ${activeTab === 'home' ? 'active' : ''}`}
+                onClick={() => setActiveTab('home')}
+            >
+                Home
+            </button>
+            <button
+                className={`navigation-btn ${activeTab === 'chat' ? 'active' : ''}`}
+                onClick={() => setActiveTab('chat')}
+            >
+                Chat
+            </button>
+            <button
+                className={`navigation-btn ${activeTab === 'email' ? 'active' : ''}`}
+                onClick={() => setActiveTab('email')}
+            >
+                Email
+            </button>
+            <button
+                className={`navigation-btn ${activeTab === 'sms' ? 'active' : ''}`}
+                onClick={() => setActiveTab('sms')}
+            >
+                SMS
+            </button>
+            <button
+                className={`navigation-btn ${activeTab === 'call' ? 'active' : ''}`}
+                onClick={() => setActiveTab('call')}
+            >
+                Call
+            </button>
         </div>
     );
 };
