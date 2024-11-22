@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import ReactQuill from 'react-quill'; // Import the rich text editor
-import 'react-quill/dist/quill.snow.css'; // Import styles for the editor
-import './EmailSender.css'; // Create a CSS file for styling
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import './EmailSender.css';
 
 const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
     const [recipient, setRecipient] = useState('');
@@ -20,6 +20,9 @@ const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
             return;
         }
         
+        // Sanitize the body content to remove all HTML tags except for line breaks
+        const sanitizedBody = body.replace(/<[^>]*>?/gm, '');
+    
         const formData = new FormData();
         formData.append('to', recipient);
         
@@ -27,10 +30,10 @@ const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
         if (bcc) formData.append('bcc', bcc);
         
         formData.append('subject', subject);
-        formData.append('body', body);
+        formData.append('body', sanitizedBody.replace(/\n/g, '<br>'));
         
         attachments.forEach(file => {
-            formData.append('attachments', file); // Append each attachment
+            formData.append('attachments', file);
         });
     
         try {
@@ -48,16 +51,16 @@ const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
             setBcc('');
             setSubject('');
             setBody('');
-            setAttachments([]); // Reset attachments
+            setAttachments([]);
         } catch (error) {
             console.error(error);
             alert('Failed to send email.');
         }
     };
 
+
     return (
         <div className="compose-email-container">
-            <h2>Compose Email</h2>
             <form onSubmit={handleSubmit}>
                 <input 
                     type="email" 
@@ -85,7 +88,6 @@ const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
                     onChange={(e) => setSubject(e.target.value)} 
                     required 
                 />
-                {/* Rich Text Editor for Email Body */}
                 <ReactQuill value={body} onChange={setBody} placeholder="Compose your message here..." />
                 <input 
                     type="file" 

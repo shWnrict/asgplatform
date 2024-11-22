@@ -59,71 +59,58 @@ const SentItems = () => {
     }
 
     return (
-        <div className="sent-items-container">
-            <div className="email-controls">
-                <button 
-                    onClick={() => setRefreshKey(prev => prev + 1)}
-                    disabled={loading}
-                >
-                    Refresh
-                </button>
-            </div>
-
-            <h2>Sent Items</h2>
-            
-            <div className="sent-items-content">
-                <div className="email-list">
-                    {loading && emails.length === 0 ? (
-                        <div className="loading">Loading emails...</div>
-                    ) : (
-                        emails.map((email) => (
-                            <div
-                                key={email.id}
-                                className={`email-item ${!email.isRead ? 'unread' : ''} ${selectedEmail?.id === email.id ? 'selected' : ''}`}
-                                onClick={() => setSelectedEmail(email)}
-                            >
-                                <div className="email-header">
-                                    <span className="from">{email.from}</span>
-                                    <span className="date">{formatDate(email.date)}</span>
-                                </div>
-                                <div className="subject">{email.subject}</div>
-                                <div className="preview">{email.body?.substring(0, 100)}...</div>
+        <div className="inbox-container">
+            <div className="email-list">
+                {loading && emails.length === 0 ? (
+                    <div className="loading">Loading emails...</div>
+                ) : (
+                    emails.map((email) => (
+                        <div
+                            key={email.id}
+                            className={`email-item ${!email.isRead ? 'unread' : ''} ${selectedEmail?.id === email.id ? 'selected' : ''}`}
+                            onClick={() => setSelectedEmail(email)}
+                        >
+                            <div className="email-header">
+                                <span className="from">{email.from}</span>
+                                <span className="date">{formatDate(email.date)}</span>
                             </div>
-                        ))
-                    )}
-                    {loading && emails.length > 0 && (
-                        <div className="loading-overlay">Refreshing...</div>
-                    )}
-                </div>
-
-                {selectedEmail && (
-                    <div className="email-content">
-                        <h3>{selectedEmail.subject}</h3>
-                        <div className="email-details">
-                            <p><strong>From:</strong> {selectedEmail.from}</p>
-                            <p><strong>To:</strong> {selectedEmail.to}</p>
-                            <p><strong>Date:</strong> {formatDate(selectedEmail.date)}</p>
+                            <div className="subject">{email.subject}</div>
+                            <div className="preview">{email.body?.substring(0, 100)}...</div>
                         </div>
-                        <div className="email-body">
-                            {selectedEmail.html ? (
-                                <div dangerouslySetInnerHTML={{ __html: selectedEmail.html }} />
-                            ) : (
-                                <pre>{selectedEmail.body}</pre>
-                            )}
-                        </div>
-                        {selectedEmail.attachments?.length > 0 && (
-                            <div className="attachments">
-                                <h4>Attachments:</h4>
-                                {selectedEmail.attachments.map((attachment, index) => (
-                                    <div key={index} className="attachment">
-                                        <a href={attachment.url} download>{attachment.filename} 📎</a>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                    ))
+                )}
+                {loading && emails.length > 0 && (
+                    <div className="loading-overlay">Refreshing...</div>
                 )}
             </div>
+
+            {selectedEmail && (
+                <div className="email-content">
+                    <h3>{selectedEmail.subject}</h3>
+                    <div className="email-details">
+                        <p><strong>From:</strong> {selectedEmail.from}</p>
+                        <p><strong>To:</strong> {selectedEmail.to}</p>
+                        <p><strong>Date:</strong> {formatDate(selectedEmail.date)}</p>
+                    </div>
+                    <div className="email-body">
+                        {selectedEmail.html ? (
+                            <div dangerouslySetInnerHTML={{ __html: selectedEmail.html }} />
+                        ) : (
+                            <pre>{selectedEmail.body}</pre>
+                        )}
+                    </div>
+                    {selectedEmail.attachments?.length > 0 && (
+                        <div className="attachments">
+                            <h4>Attachments:</h4>
+                            {selectedEmail.attachments.map((attachment, index) => (
+                                <div key={index} className="attachment">
+                                    <a href={attachment.url} download>{attachment.filename} 📎</a>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
