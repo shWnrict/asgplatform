@@ -162,3 +162,33 @@
     border-radius: 8px;
     margin-top: 10px;
 }
+
+.attachment {
+    margin-top: 8px;
+}
+
+.attachment-link {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.attachment-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.remove-attachment {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+}
+
+.file-input-label {
+    cursor: pointer;
+    padding: 6px 12px;
+    background: #f0f0f0;
+    border-radius: 4px;
+}

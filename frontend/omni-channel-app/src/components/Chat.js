@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import EmojiPicker from 'emoji-picker-react';
 import './Chat.css';
 
 const socket = io('http://localhost:5000');
@@ -13,7 +12,6 @@ const Chat = ({ loggedInUser }) => {
     const [message, setMessage] = useState('');
     const [attachment, setAttachment] = useState(null);
     const [isTyping, setIsTyping] = useState(false);
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [isSending, setIsSending] = useState(false);
 
     useEffect(() => {
@@ -24,13 +22,8 @@ const Chat = ({ loggedInUser }) => {
             setIsTyping(false);
         });
 
-        socket.on('typing', () => {
-            setIsTyping(true);
-        });
-
-        socket.on('stopTyping', () => {
-            setIsTyping(false);
-        });
+        socket.on('typing', () => setIsTyping(true));
+        socket.on('stopTyping', () => setIsTyping(false));
 
         return () => {
             socket.off('receiveMessage');
@@ -43,31 +36,52 @@ const Chat = ({ loggedInUser }) => {
         e.preventDefault();
         if (!message && !attachment) return;
 
-        const msgData = {
-            userId: loggedInUser,
-            message,
-            attachment,
-            timestamp: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' })
-        };
-
         setIsSending(true);
-        socket.emit('sendMessage', msgData);
-        resetInput();
-        setIsSending(false);
+        
+        try {
+            let attachmentUrl = null;
+            
+            // Handle file upload if there's an attachment
+            if (attachment) {
+                const formData = new FormData();
+                formData.append('file', attachment);
+                
+                const uploadResponse = await fetch('http://localhost:5000/api/chat/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+                
+                if (uploadResponse.ok) {
+                    const data = await uploadResponse.json();
+                    attachmentUrl = data.fileUrl;
+                } else {
+                    throw new Error('File upload failed');
+                }
+            }
+
+            const msgData = {
+                userId: loggedInUser,
+                message,
+                attachment: attachmentUrl,
+                timestamp: new Date().toLocaleString('en-US', { 
+                    dateStyle: 'short', 
+                    timeStyle: 'short' 
+                })
+            };
+
+            socket.emit('sendMessage', msgData);
+            resetInput();
+        } catch (error) {
+            console.error('Error sending message:', error);
+            alert('Failed to send message. Please try again.');
+        } finally {
+            setIsSending(false);
+        }
     };
 
     const resetInput = () => {
         setMessage('');
         setAttachment(null);
-        setShowEmojiPicker(false);
-    };
-
-    const handleTyping = () => {
-        socket.emit('typing');
-    };
-
-    const handleEmojiClick = (emojiObject) => {
-        setMessage((prevMessage) => prevMessage + emojiObject.emoji);
     };
 
     const handleFileChange = (e) => {
@@ -85,11 +99,25 @@ const Chat = ({ loggedInUser }) => {
                 {messages.map((msg, index) => (
                     <div key={index} className={`message-bubble ${msg.userId === loggedInUser ? 'my-message' : 'admin-message'}`}>
                         <p><strong>{msg.userId}:</strong> {msg.message}</p>
-                        {msg.attachment && <img src={URL.createObjectURL(msg.attachment)} alt="attachment" />}
+                        {msg.attachment && (
+                            <div className="attachment">
+                                <a 
+                                    href={msg.attachment}
+                                    download
+                                    className="attachment-link"
+                                >
+                                    📎 Download Attachment
+                                </a>
+                            </div>
+                        )}
                         <span className="timestamp">{msg.timestamp}</span>
                     </div>
                 ))}
-                {isTyping && <div className="typing-indicator">{loggedInUser === "admin" ? "User is typing..." : "Admin is typing..."}</div>}
+                {isTyping && (
+                    <div className="typing-indicator">
+                        {loggedInUser === "admin" ? "User is typing..." : "Admin is typing..."}
+                    </div>
+                )}
             </div>
             <form onSubmit={handleSendMessage} className="chat-form">
                 <input
@@ -97,22 +125,35 @@ const Chat = ({ loggedInUser }) => {
                     value={message}
                     onChange={(e) => {
                         setMessage(e.target.value);
-                        handleTyping();
+                        socket.emit('typing');
                     }}
+                    onBlur={() => socket.emit('stopTyping')}
                     placeholder="Type a message..."
                 />
                 <input
                     type="file"
                     id="file-input"
                     onChange={handleFileChange}
+                    style={{ display: 'none' }}
                 />
-                <label htmlFor="file-input">📎 Attach</label>
-                {attachment && <div className="attachment-preview"><p>{attachment.name}</p></div>}
-                <button type="button" className="emoji-btn" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😊</button>
-                {showEmojiPicker && (
-                    <EmojiPicker onEmojiClick={handleEmojiClick} />
+                <label htmlFor="file-input" className="file-input-label">
+                    📎 Attach
+                </label>
+                {attachment && (
+                    <div className="attachment-preview">
+                        <p>{attachment.name}</p>
+                        <button 
+                            type="button" 
+                            onClick={() => setAttachment(null)}
+                            className="remove-attachment"
+                        >
+                            ✕
+                        </button>
+                    </div>
                 )}
-                <button type="submit" disabled={isSending}>{isSending ? 'Sending...' : 'Send'}</button>
+                <button type="submit" disabled={isSending}>
+                    {isSending ? 'Sending...' : 'Send'}
+                </button>
             </form>
         </div>
     );
