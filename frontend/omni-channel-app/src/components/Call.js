@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './DialPad.css'; // Make sure to import the CSS
 
 const Call = () => {
     const [dialNumber, setDialNumber] = useState('');
@@ -30,7 +31,7 @@ const Call = () => {
     };
 
     return (
-        <div>
+        <div className="dial-container">
             <h2>Dial Pad</h2>
             <div className="dial-pad">
                 <input 
@@ -38,14 +39,17 @@ const Call = () => {
                     placeholder="Enter Number" 
                     value={dialNumber} 
                     readOnly 
+                    className="dial-input"
                 />
                 <div className="button-grid">
                     {['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'].map((num) => (
-                        <button key={num} onClick={() => handleButtonClick(num)}>{num}</button>
+                        <button key={num} onClick={() => handleButtonClick(num)} className="dial-button">{num}</button>
                     ))}
                 </div>
-                <button onClick={handleClear}>Clear</button>
-                <button onClick={handleDial}>Call</button>
+                <div className="dial-actions">
+                    <button onClick={handleClear} className="action-button clear-button">Clear</button>
+                    <button onClick={handleDial} className="action-button call-button">Call</button>
+                </div>
             </div>
         </div>
     );

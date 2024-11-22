@@ -1,0 +1,85 @@
+/* Dial Pad Container */
+.dial-container {
+    text-align: center;
+    padding: 20px;
+    max-width: 400px;
+    margin: auto;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dial Pad Title */
+.dial-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Dial Pad Input */
+.dial-input {
+    width: calc(100% - 40px);
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Button Grid */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Dial Buttons */
+.dial-button {
+    padding: 20px;
+    font-size: 18px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dial-button:hover {
+    background-color: #0056b3;
+}
+
+/* Action Buttons (Clear and Call) */
+.dial-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.action-button {
+    flex: 1;
+    padding: 15px 0;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.clear-button {
+    background-color: #ff6f61;
+    margin-right: 10px;
+}
+
+.clear-button:hover {
+    background-color: #e05347;
+}
+
+.call-button {
+    background-color: #28a745;
+}
+
+.call-button:hover {
+    background-color: #218838;
+}
