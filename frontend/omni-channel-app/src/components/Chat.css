@@ -193,19 +193,3 @@
     border-radius: 4px;
 }
 
-// Add this to your Chat.css
-.download-button {
-    background: none;
-    border: none;
-    color: #0066cc;
-    cursor: pointer;
-    padding: 5px 10px;
-    text-decoration: underline;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.download-button:hover {
-    color: #0052a3;
-}

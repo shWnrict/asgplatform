@@ -15,9 +15,11 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        // Preserve original filename while ensuring uniqueness
+        // Store original filename in a way we can extract it later
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname);
+        const originalName = Buffer.from(file.originalname).toString('base64');
+        const filename = `${uniqueSuffix}-${originalName}${path.extname(file.originalname)}`;
+        cb(null, filename);
     }
 });
 
@@ -33,14 +35,14 @@ router.post('/upload', upload.single('file'), (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        // Send back both the URL and the original filename
-        const fileUrl = `${req.protocol}://${req.get('host')}/api/chat/download/${req.file.filename}`;
-        
-        res.json({
+        // Send back both the download URL and the original filename
+        const fileInfo = {
             message: 'File uploaded successfully',
-            fileUrl: fileUrl,
+            fileUrl: `${req.protocol}://${req.get('host')}/api/chat/download/${req.file.filename}`,
             fileName: req.file.originalname
-        });
+        };
+
+        res.json(fileInfo);
     } catch (error) {
         console.error('File upload error:', error);
         res.status(500).json({ error: 'File upload failed' });
@@ -49,28 +51,31 @@ router.post('/upload', upload.single('file'), (req, res) => {
 
 // Download endpoint
 router.get('/download/:filename', (req, res) => {
-    const filename = req.params.filename;
-    const filePath = path.join(__dirname, '..', 'uploads', filename);
+    try {
+        const filename = req.params.filename;
+        const filePath = path.join(__dirname, '..', 'uploads', filename);
 
-    // Verify file exists
-    if (!fs.existsSync(filePath)) {
-        return res.status(404).send('File not found');
-    }
-
-    // Get the original filename (remove the unique prefix)
-    const originalFilename = filename.substring(filename.indexOf('-') + 1);
-
-    // Set headers for file download
-    res.setHeader('Content-Disposition', `attachment; filename="${originalFilename}"`);
-    res.setHeader('Content-Type', 'application/octet-stream');
-
-    // Send the file
-    res.download(filePath, originalFilename, (err) => {
-        if (err) {
-            console.error('Download error:', err);
-            res.status(500).send('Error downloading file');
+        // Check if file exists
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).send('File not found');
         }
-    });
+
+        // Extract original filename from the stored filename
+        const parts = filename.split('-');
+        const encodedOriginalName = parts[2].split('.')[0]; // Get the base64 encoded original name
+        const originalName = Buffer.from(encodedOriginalName, 'base64').toString();
+        
+        // Set headers for download
+        res.setHeader('Content-Type', 'application/octet-stream');
+        res.setHeader('Content-Disposition', `attachment; filename="${originalName}"`);
+
+        // Stream the file
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.pipe(res);
+    } catch (error) {
+        console.error('Download error:', error);
+        res.status(500).send('Error downloading file');
+    }
 });
 
 module.exports = router;

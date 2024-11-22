@@ -1,4 +1,3 @@
-// Chat.js - Frontend
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import './Chat.css';
@@ -33,6 +32,14 @@ const Chat = ({ loggedInUser }) => {
         };
     }, [messages]);
 
+    // Define the handleFileChange function
+    const handleFileChange = (event) => {
+        const file = event.target.files[0]; // Get the first selected file
+        if (file) {
+            setAttachment(file); // Update attachment state with the selected file
+        }
+    };
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!message && !attachment) return;
@@ -55,7 +62,8 @@ const Chat = ({ loggedInUser }) => {
                     const data = await uploadResponse.json();
                     attachmentInfo = {
                         url: data.fileUrl,
-                        fileName: data.fileName
+                        fileName: data.fileName,
+                        originalName: attachment.name // Store original name from file object
                     };
                 } else {
                     throw new Error('File upload failed');
@@ -63,7 +71,7 @@ const Chat = ({ loggedInUser }) => {
             }
 
             const msgData = {
-                userId: loggedInUser,
+                userId: loggedInUser, // Ensure this is the correct user ID
                 message,
                 attachment: attachmentInfo,
                 timestamp: new Date().toLocaleString('en-US', { 
@@ -72,28 +80,20 @@ const Chat = ({ loggedInUser }) => {
                 })
             };
 
+            console.log("Sending message from user:", loggedInUser); // Debugging log
             socket.emit('sendMessage', msgData);
-            resetInput();
+            resetInput(); // Ensure to reset input fields after sending
         } catch (error) {
             console.error('Error sending message:', error);
-            alert('Failed to send message. Please try again.');
+            alert('Failed to send message. Please try again.'); // Show alert only on error
         } finally {
-            setIsSending(false);
+            setIsSending(false); // Always set sending state to false
         }
     };
 
     const resetInput = () => {
         setMessage('');
-        setAttachment(null);
-    };
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file && file.size > 5 * 1024 * 1024) {
-            alert("File size exceeds 5MB limit.");
-            return;
-        }
-        setAttachment(file);
+        setAttachment(null); // Reset attachment after sending
     };
 
     const handleDownload = async (url, fileName) => {
@@ -101,16 +101,23 @@ const Chat = ({ loggedInUser }) => {
             const response = await fetch(url);
             if (!response.ok) throw new Error('Download failed');
             
-            // Create a blob from the response
-            const blob = await response.blob();
+            // Get the filename from the Content-Disposition header if available
+            const contentDisposition = response.headers.get('content-disposition');
+            let downloadFileName = fileName;
             
-            // Create a temporary URL for the blob
+            if (contentDisposition) {
+                const matches = /filename="([^"]*)"/.exec(contentDisposition);
+                if (matches && matches[1]) {
+                    downloadFileName = matches[1];
+                }
+            }
+
+            const blob = await response.blob();
             const downloadUrl = window.URL.createObjectURL(blob);
             
-            // Create a temporary link element
             const link = document.createElement('a');
             link.href = downloadUrl;
-            link.download = fileName || 'download'; // Use original filename if available
+            link.download = downloadFileName;
             document.body.appendChild(link);
             link.click();
             
@@ -134,11 +141,11 @@ const Chat = ({ loggedInUser }) => {
                                 <button 
                                     onClick={() => handleDownload(
                                         msg.attachment.url, 
-                                        msg.attachment.fileName
+                                        msg.attachment.originalName || msg.attachment.fileName
                                     )}
                                     className="download-button"
                                 >
-                                    📎 Download {msg.attachment.fileName}
+                                    📎 Download {msg.attachment.originalName || msg.attachment.fileName}
                                 </button>
                             </div>
                         )}
@@ -165,7 +172,7 @@ const Chat = ({ loggedInUser }) => {
                 <input
                     type="file"
                     id="file-input"
-                    onChange={handleFileChange}
+                    onChange={handleFileChange} // Attach the handler here
                     style={{ display: 'none' }}
                 />
                 <label htmlFor="file-input" className="file-input-label">
