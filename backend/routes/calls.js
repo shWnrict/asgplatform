@@ -8,7 +8,7 @@ router.post('/call', (req, res) => {
     const { to } = req.body;
 
     client.calls.create({
-        url: 'http://demo.twilio.com/docs/voice.xml', // A URL that returns TwiML instructions for the call.
+        url: 'http://demo.twilio.com/docs/voice.xml', // URL that returns TwiML instructions for the call.
         to,
         from: process.env.TWILIO_PHONE_NUMBER,
     })

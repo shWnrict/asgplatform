@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Call = () => {
     const [dialNumber, setDialNumber] = useState('');
 
-    const handleDial = () => {
-        // Logic to initiate a call using Twilio or another service
-        alert(`Calling ${dialNumber}`);
+    const handleDial = async () => {
+        if (!dialNumber) {
+            alert('Please enter a number to call.');
+            return;
+        }
+        
+        try {
+            const response = await axios.post('http://localhost:5000/api/call', { to: dialNumber });
+            alert(response.data); // Display success message
+        } catch (error) {
+            console.error('Error making call:', error);
+            alert('Failed to make call: ' + error.response?.data || error.message);
+        }
+
         setDialNumber(''); // Clear the number after dialing
     };
 

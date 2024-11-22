@@ -52,6 +52,7 @@ app.use('/api/email', require('./routes/email')); // Use the email route
 app.use('/api/sms', require('./routes/sms'));
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/calls', require('./routes/calls'));
+app.use('/api/incoming-call', require('./routes/incoming-call'));
 
 // Start server
 const PORT = process.env.PORT || 5000;
