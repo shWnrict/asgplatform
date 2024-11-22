@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import './Chat.css';
 
@@ -13,6 +13,9 @@ const Chat = ({ loggedInUser }) => {
     const [attachment, setAttachment] = useState(null);
     const [isTyping, setIsTyping] = useState(false);
     const [isSending, setIsSending] = useState(false);
+    
+    // Ref for scrolling to the bottom
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
         localStorage.setItem('chatMessages', JSON.stringify(messages));
@@ -32,7 +35,11 @@ const Chat = ({ loggedInUser }) => {
         };
     }, [messages]);
 
-    // Define the handleFileChange function
+    // Scroll to bottom every time messages change
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
     const handleFileChange = (event) => {
         const file = event.target.files[0]; // Get the first selected file
         if (file) {
@@ -71,7 +78,7 @@ const Chat = ({ loggedInUser }) => {
             }
 
             const msgData = {
-                userId: loggedInUser, // Ensure this is the correct user ID
+                userId: loggedInUser,
                 message,
                 attachment: attachmentInfo,
                 timestamp: new Date().toLocaleString('en-US', { 
@@ -157,6 +164,8 @@ const Chat = ({ loggedInUser }) => {
                         {loggedInUser === "admin" ? "User is typing..." : "Admin is typing..."}
                     </div>
                 )}
+                {/* Dummy div for scrolling */}
+                <div ref={messagesEndRef} />
             </div>
             <form onSubmit={handleSendMessage} className="chat-form">
                 <input
