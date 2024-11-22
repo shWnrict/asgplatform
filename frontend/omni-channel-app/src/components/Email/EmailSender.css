@@ -1,36 +1,92 @@
+/* Main container styling */
 .compose-email-container {
     background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 800px;
+    margin: 50px auto;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
 }
 
+/* Heading for the compose area */
 .compose-email-container h2 {
-    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
 }
 
+/* Input fields styling */
 .compose-email-container input,
 .compose-email-container .ql-editor {
     width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
 }
 
+/* Focus effect for input fields */
+.compose-email-container input:focus,
+.compose-email-container .ql-editor:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+    outline: none;
+}
+
+/* Styling for email body editor */
 .compose-email-container .ql-editor {
-    min-height: 200px; /* Set minimum height for the editor */
+    min-height: 200px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #555;
 }
 
+/* File input button */
+.compose-email-container input[type="file"] {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Button styling */
 .compose-email-container button {
-    padding: 10px 20px;
-    background-color: #007bff; /* Bootstrap primary color */
-    color: white;
+    background-color: #007bff;
+    color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
+/* Button hover effect */
 .compose-email-container button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    background-color: #0056b3;
+}
+
+/* Layout and spacing adjustments for smaller screens */
+@media (max-width: 600px) {
+    .compose-email-container {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    .compose-email-container h2 {
+        font-size: 20px;
+    }
+
+    .compose-email-container input,
+    .compose-email-container .ql-editor {
+        font-size: 14px;
+    }
 }
