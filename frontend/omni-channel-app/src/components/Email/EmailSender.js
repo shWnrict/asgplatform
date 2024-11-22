@@ -20,9 +20,6 @@ const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
             return;
         }
         
-        // Sanitize the body content to remove all HTML tags except for line breaks
-        const sanitizedBody = body.replace(/<[^>]*>?/gm, '');
-    
         const formData = new FormData();
         formData.append('to', recipient);
         
@@ -30,22 +27,21 @@ const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
         if (bcc) formData.append('bcc', bcc);
         
         formData.append('subject', subject);
-        formData.append('body', sanitizedBody.replace(/\n/g, '<br>'));
+        formData.append('body', body);
         
         attachments.forEach(file => {
             formData.append('attachments', file);
         });
-    
+
         try {
             await axios.post('http://localhost:5000/api/email/send', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             
             alert('Email sent successfully!');
-            onEmailSent(); 
+            onEmailSent();
             setActiveSubTab('sent'); 
             
-            // Reset fields after sending
             setRecipient('');
             setCc('');
             setBcc('');
@@ -58,29 +54,33 @@ const EmailSender = ({ onEmailSent, setActiveSubTab }) => {
         }
     };
 
-
     return (
         <div className="compose-email-container">
             <form onSubmit={handleSubmit}>
-                <input 
-                    type="email" 
-                    placeholder="To" 
-                    value={recipient} 
-                    onChange={(e) => setRecipient(e.target.value)} 
-                    required 
-                />
-                <input 
-                    type="text" 
-                    placeholder="CC" 
-                    value={cc} 
-                    onChange={(e) => setCc(e.target.value)} 
-                />
-                <input 
-                    type="text" 
-                    placeholder="BCC" 
-                    value={bcc} 
-                    onChange={(e) => setBcc(e.target.value)} 
-                />
+                <div className="email-fields-container">
+                    <input 
+                        type="email" 
+                        placeholder="To" 
+                        value={recipient} 
+                        onChange={(e) => setRecipient(e.target.value)}
+                        className="to-field"
+                        required 
+                    />
+                    <input 
+                        type="text" 
+                        placeholder="CC" 
+                        value={cc} 
+                        onChange={(e) => setCc(e.target.value)}
+                        className="cc-field" 
+                    />
+                    <input 
+                        type="text" 
+                        placeholder="BCC" 
+                        value={bcc} 
+                        onChange={(e) => setBcc(e.target.value)}
+                        className="bcc-field" 
+                    />
+                </div>
                 <input 
                     type="text" 
                     placeholder="Subject" 

@@ -20,24 +20,41 @@
     text-align: center;
 }
 
-/* Input fields styling */
-.compose-email-container input,
-.compose-email-container .ql-container,
-.compose-email-container .ql-editor {
-    width: 100%;
-    padding: 15px;
+/* Flex container for the email fields */
+.email-fields-container {
+    display: flex;
+    gap: 10px; /* Adjust gap between fields */
+    flex-wrap: wrap; /* Wrap on smaller screens */
     margin-bottom: 20px;
+}
+
+/* Wider input field for 'To' */
+.compose-email-container .to-field {
+    flex: 2; /* Takes up more space */
+}
+
+/* Smaller input fields for 'CC' and 'BCC' */
+.compose-email-container .cc-field,
+.compose-email-container .bcc-field {
+    flex: 1; /* Takes up less space */
+}
+
+/* General input fields styling */
+.compose-email-container input[type="email"],
+.compose-email-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
     border: 1px solid #cfcfcf;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 14px;
     background-color: #f9f9f9;
     transition: all 0.3s ease;
 }
 
-/* Full width and fixed height for the editor container */
+/* Full width and increased height for the editor container */
 .compose-email-container .ql-container {
     width: 100%;
-    height: 300px; /* Fixed height to prevent expanding indefinitely */
+    height: 400px; /* Increased height */
 }
 
 /* Focus effect for input fields */
@@ -110,6 +127,10 @@
         font-size: 22px;
     }
 
+    .email-fields-container {
+        flex-direction: column; /* Stack fields vertically on small screens */
+    }
+
     .compose-email-container input,
     .compose-email-container .ql-container,
     .compose-email-container .ql-editor {
@@ -124,6 +145,6 @@
 
     .compose-email-container .ql-container {
         width: 100%;
-        height: 250px; /* Adjust height for smaller screens */
+        height: 300px; /* Adjust height for smaller screens */
     }
 }
