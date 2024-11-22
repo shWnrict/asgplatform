@@ -22,7 +22,7 @@ const Inbox = () => {
         } catch (error) {
             console.error('Error fetching emails:', error);
             setError(error.message || 'Failed to fetch emails');
-            setEmails(prevEmails => prevEmails); // Keep the existing emails in case of error
+            setEmails((prevEmails) => prevEmails); // Keep existing emails in case of error
         } finally {
             setLoading(false);
         }
@@ -36,7 +36,7 @@ const Inbox = () => {
     // Refresh emails periodically
     useEffect(() => {
         const intervalId = setInterval(() => {
-            setRefreshKey(prev => prev + 1);
+            setRefreshKey((prev) => prev + 1);
         }, 300000); // Refresh every 5 minutes
 
         return () => clearInterval(intervalId);
@@ -51,7 +51,7 @@ const Inbox = () => {
         return (
             <div className="error-container">
                 <p>Error: {error}</p>
-                <button onClick={() => setRefreshKey(prev => prev + 1)}>
+                <button onClick={() => setRefreshKey((prev) => prev + 1)}>
                     Retry
                 </button>
             </div>
@@ -60,15 +60,6 @@ const Inbox = () => {
 
     return (
         <div className="inbox-container">
-            <div className="email-controls">
-                <button 
-                    onClick={() => setRefreshKey(prev => prev + 1)}
-                    disabled={loading}
-                >
-                    Refresh
-                </button>
-            </div>
-            
             <div className="email-list">
                 {loading && emails.length === 0 ? (
                     <div className="loading">Loading emails...</div>
@@ -76,7 +67,9 @@ const Inbox = () => {
                     emails.map((email) => (
                         <div
                             key={email.id}
-                            className={`email-item ${!email.isRead ? 'unread' : ''} ${selectedEmail?.id === email.id ? 'selected' : ''}`}
+                            className={`email-item ${!email.isRead ? 'unread' : ''} ${
+                                selectedEmail?.id === email.id ? 'selected' : ''
+                            }`}
                             onClick={() => setSelectedEmail(email)}
                         >
                             <div className="email-header">
@@ -97,13 +90,21 @@ const Inbox = () => {
                 <div className="email-content">
                     <h3>{selectedEmail.subject}</h3>
                     <div className="email-details">
-                        <p><strong>From:</strong> {selectedEmail.from}</p>
-                        <p><strong>To:</strong> {selectedEmail.to}</p>
-                        <p><strong>Date:</strong> {formatDate(selectedEmail.date)}</p>
+                        <p>
+                            <strong>From:</strong> {selectedEmail.from}
+                        </p>
+                        <p>
+                            <strong>To:</strong> {selectedEmail.to}
+                        </p>
+                        <p>
+                            <strong>Date:</strong> {formatDate(selectedEmail.date)}
+                        </p>
                     </div>
                     <div className="email-body">
                         {selectedEmail.html ? (
-                            <div dangerouslySetInnerHTML={{ __html: selectedEmail.html }} />
+                            <div
+                                dangerouslySetInnerHTML={{ __html: selectedEmail.html }}
+                            />
                         ) : (
                             <pre>{selectedEmail.body}</pre>
                         )}
@@ -113,7 +114,9 @@ const Inbox = () => {
                             <h4>Attachments:</h4>
                             {selectedEmail.attachments.map((attachment, index) => (
                                 <div key={index} className="attachment">
-                                    <a href={attachment.url} download>{attachment.filename} 📎</a>
+                                    <a href={attachment.url} download>
+                                        {attachment.filename} 📎
+                                    </a>
                                 </div>
                             ))}
                         </div>

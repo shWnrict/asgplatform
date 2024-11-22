@@ -1,0 +1,69 @@
+/* Email Container */
+.email-container {
+    width: 100%; /* Ensure it takes up full width */
+    max-width: 1200px; /* Maximum width to avoid stretching too wide */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: auto; /* Centers it horizontally */
+}
+
+/* Title */
+.email-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+/* Tabs */
+.email-tabs {
+    display: flex;
+    justify-content: space-between; /* Spread out the tabs */
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.email-tab {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    flex-grow: 1; /* Makes the buttons stretch to fill space */
+}
+
+.email-tab:hover {
+    background-color: #ddd;
+}
+
+.email-tab.active {
+    background-color: #28a745; /* Green active tab */
+    color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .email-container {
+        padding: 15px;
+    }
+
+    .email-title {
+        font-size: 24px;
+    }
+
+    .email-tabs {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .email-tab {
+        width: 100%;
+        text-align: center;
+    }
+}

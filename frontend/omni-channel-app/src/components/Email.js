@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Inbox from './Email/Inbox';
 import SentItems from './Email/SentItems';
 import EmailSender from './Email/EmailSender';
+import './Email.css'; // Ensure the CSS file is imported
 
 const Email = () => {
   const [activeSubTab, setActiveSubTab] = useState('inbox');
@@ -20,12 +21,26 @@ const Email = () => {
   };
 
   return (
-    <div>
-      <h2>Email</h2>
+    <div className="email-container">
       <div className="email-tabs">
-        <button onClick={() => setActiveSubTab('inbox')}>Inbox</button>
-        <button onClick={() => setActiveSubTab('sent')}>Sent Items</button>
-        <button onClick={() => setActiveSubTab('compose')}>Compose Email</button>
+        <button
+          className={`email-tab ${activeSubTab === 'inbox' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('inbox')}
+        >
+          Inbox
+        </button>
+        <button
+          className={`email-tab ${activeSubTab === 'sent' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('sent')}
+        >
+          Sent Items
+        </button>
+        <button
+          className={`email-tab ${activeSubTab === 'compose' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('compose')}
+        >
+          Compose Email
+        </button>
       </div>
       {renderEmailContent()}
     </div>
