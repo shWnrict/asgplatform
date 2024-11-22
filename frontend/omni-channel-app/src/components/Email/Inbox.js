@@ -114,13 +114,19 @@ const Inbox = () => {
                             <h4>Attachments:</h4>
                             {selectedEmail.attachments.map((attachment, index) => (
                                 <div key={index} className="attachment">
-                                    <a href={attachment.url} download>
-                                        {attachment.filename} 📎
+                                    <a
+                                        href={attachment.downloadUrl} // Use downloadUrl instead of url
+                                        download={attachment.filename}
+                                        className="attachment-link"
+                                    >
+                                        📎 {attachment.filename} ({Math.round(attachment.size / 1024)} KB)
                                     </a>
                                 </div>
                             ))}
                         </div>
                     )}
+
+
                 </div>
             )}
         </div>

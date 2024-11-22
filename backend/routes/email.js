@@ -80,9 +80,28 @@ router.get('/sent', async (req, res) => {
     }
 });
 // Route to serve attachments
-router.get('/attachments/:filename', (req, res) => {
-    const filePath = `path/to/your/storage/${req.params.filename}`; // Adjust this path as needed
-    res.download(filePath); // This will prompt the user to download the file
+// router.get('/attachments/:filename', (req, res) => {
+//     const filePath = `path/to/your/storage/${req.params.filename}`; // Adjust this path as needed
+//     res.download(filePath); // This will prompt the user to download the file
+// });
+
+const { fetchAttachment } = require('../services/imapService');
+
+// Dynamic attachment download route
+router.get('/attachments/:uid/:filename', async (req, res) => {
+    const { uid, filename } = req.params;
+
+    try {
+        const attachment = await fetchAttachment(uid, filename);
+
+        res.setHeader('Content-Type', attachment.contentType);
+        res.setHeader('Content-Disposition', `attachment; filename="${attachment.filename}"`);
+        res.send(attachment.content); // Directly stream the content
+    } catch (error) {
+        console.error('Error fetching attachment:', error);
+        res.status(404).send('Attachment not found');
+    }
 });
+
 
 module.exports = router;

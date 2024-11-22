@@ -23,37 +23,37 @@ async function fetchEmails(boxName) {
                 date.setHours(0, 0, 0, 0); // Start of today
 
                 imap.search([['SINCE', date]], (err, results) => {
-                    if (err || !results.length) return resolve([]);
-
-                    const fetch = imap.fetch(results, { bodies: '', struct: true });
-                    fetch.on('message', (msg) => {
-                        msg.on('body', (stream) => {
-                            simpleParser(stream, (err, parsed) => {
-                                if (err) return reject(err);
-
-                                emails.push({
-                                    from: parsed.from.text,
-                                    to: parsed.to ? parsed.to.text : '',
-                                    subject: parsed.subject,
-                                    date: parsed.date,
-                                    body: parsed.text,
-                                    html: parsed.html,
-                                    attachments: parsed.attachments.map(att => ({
-                                        filename: att.filename,
-                                        contentType: att.contentType,
-                                        size: att.size,
-                                        content: att.content.toString('base64')
-                                    }))
-                                });
-
-                                if (emails.length === results.length) {
-                                    imap.end();
-                                    resolve(emails);
-                                }
-                            });
-                        });
-                    });
-                });
+                  if (err || !results.length) return resolve([]);
+              
+                  const fetch = imap.fetch(results, { bodies: '', struct: true });
+                  fetch.on('message', (msg, seqno) => {
+                      msg.on('body', (stream) => {
+                          simpleParser(stream, (err, parsed) => {
+                              if (err) return reject(err);
+              
+                              emails.push({
+                                  from: parsed.from.text,
+                                  to: parsed.to ? parsed.to.text : '',
+                                  subject: parsed.subject,
+                                  date: parsed.date,
+                                  body: parsed.text,
+                                  html: parsed.html,
+                                  attachments: parsed.attachments.map((att) => ({
+                                      filename: att.filename,
+                                      size: att.size,
+                                      downloadUrl: `http://localhost:5000/api/email/attachments/${seqno}/${att.filename}` // Include download link
+                                  })),
+                              });
+              
+                              if (emails.length === results.length) {
+                                  imap.end();
+                                  resolve(emails);
+                              }
+                          });
+                      });
+                  });
+              });
+              
             });
         });
 
@@ -70,4 +70,40 @@ async function fetchTodaysSentEmails() {
     return fetchEmails('[Gmail]/Sent Mail');
 }
 
-module.exports = { fetchTodaysEmails, fetchTodaysSentEmails };
+async function fetchAttachment(uid, attachmentName, boxName = 'INBOX') {
+  return new Promise((resolve, reject) => {
+      const imap = new Imap(imapConfig);
+
+      imap.once('ready', () => {
+          imap.openBox(boxName, false, (err) => {
+              if (err) return reject(err);
+
+              const fetch = imap.fetch(uid, { bodies: '', struct: true });
+              fetch.on('message', (msg) => {
+                  msg.on('body', (stream) => {
+                      simpleParser(stream, (err, parsed) => {
+                          if (err) return reject(err);
+
+                          const attachment = parsed.attachments.find(
+                              (att) => att.filename === attachmentName
+                          );
+                          if (!attachment) return reject(new Error('Attachment not found'));
+
+                          resolve({
+                              filename: attachment.filename,
+                              content: attachment.content,
+                              contentType: attachment.contentType,
+                          });
+                          imap.end();
+                      });
+                  });
+              });
+          });
+      });
+
+      imap.once('error', (err) => reject(err));
+      imap.connect();
+  });
+}
+
+module.exports = { fetchTodaysEmails, fetchTodaysSentEmails, fetchAttachment };

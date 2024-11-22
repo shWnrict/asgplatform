@@ -141,3 +141,30 @@
         padding: 12px;
     }
 }
+
+/* Add these styles to your CSS */
+
+/* Style for links */
+a {
+    color: #007bff; /* Customize the color as needed */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.attachment a {
+    display: inline-block;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    color: #007bff;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.attachment a:hover {
+    background-color: #dce2e6;
+}
+
