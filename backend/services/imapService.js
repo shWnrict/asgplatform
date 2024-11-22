@@ -66,8 +66,8 @@ async function fetchTodaysEmails() {
     return fetchEmails('INBOX');
 }
 
-async function fetchSentEmails() {
+async function fetchTodaysSentEmails() {
     return fetchEmails('[Gmail]/Sent Mail');
 }
 
-module.exports = { fetchTodaysEmails, fetchSentEmails };
+module.exports = { fetchTodaysEmails, fetchTodaysSentEmails };
