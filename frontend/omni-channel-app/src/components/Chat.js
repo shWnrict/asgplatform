@@ -1,3 +1,4 @@
+// Chat.js - Frontend
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import './Chat.css';
@@ -39,9 +40,8 @@ const Chat = ({ loggedInUser }) => {
         setIsSending(true);
         
         try {
-            let attachmentUrl = null;
+            let attachmentInfo = null;
             
-            // Handle file upload if there's an attachment
             if (attachment) {
                 const formData = new FormData();
                 formData.append('file', attachment);
@@ -53,7 +53,10 @@ const Chat = ({ loggedInUser }) => {
                 
                 if (uploadResponse.ok) {
                     const data = await uploadResponse.json();
-                    attachmentUrl = data.fileUrl;
+                    attachmentInfo = {
+                        url: data.fileUrl,
+                        fileName: data.fileName
+                    };
                 } else {
                     throw new Error('File upload failed');
                 }
@@ -62,7 +65,7 @@ const Chat = ({ loggedInUser }) => {
             const msgData = {
                 userId: loggedInUser,
                 message,
-                attachment: attachmentUrl,
+                attachment: attachmentInfo,
                 timestamp: new Date().toLocaleString('en-US', { 
                     dateStyle: 'short', 
                     timeStyle: 'short' 
@@ -93,6 +96,33 @@ const Chat = ({ loggedInUser }) => {
         setAttachment(file);
     };
 
+    const handleDownload = async (url, fileName) => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Download failed');
+            
+            // Create a blob from the response
+            const blob = await response.blob();
+            
+            // Create a temporary URL for the blob
+            const downloadUrl = window.URL.createObjectURL(blob);
+            
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = fileName || 'download'; // Use original filename if available
+            document.body.appendChild(link);
+            link.click();
+            
+            // Clean up
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(downloadUrl);
+        } catch (error) {
+            console.error('Download error:', error);
+            alert('Failed to download file. Please try again.');
+        }
+    };
+
     return (
         <div className="chat-container">
             <div className="messages">
@@ -101,13 +131,15 @@ const Chat = ({ loggedInUser }) => {
                         <p><strong>{msg.userId}:</strong> {msg.message}</p>
                         {msg.attachment && (
                             <div className="attachment">
-                                <a 
-                                    href={msg.attachment}
-                                    download
-                                    className="attachment-link"
+                                <button 
+                                    onClick={() => handleDownload(
+                                        msg.attachment.url, 
+                                        msg.attachment.fileName
+                                    )}
+                                    className="download-button"
                                 >
-                                    📎 Download Attachment
-                                </a>
+                                    📎 Download {msg.attachment.fileName}
+                                </button>
                             </div>
                         )}
                         <span className="timestamp">{msg.timestamp}</span>
