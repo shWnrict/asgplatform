@@ -1,0 +1,40 @@
+import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
+import './incomingCall.css';
+const socket = io('http://localhost:5000'); // Adjust URL to your backend
+
+const IncomingCallPopup = () => {
+    const [incomingCall, setIncomingCall] = useState(null);
+
+    useEffect(() => {
+        socket.on('incomingCall', (data) => {
+            setIncomingCall(data);
+        });
+
+        return () => {
+            socket.off('incomingCall');
+        };
+    }, []);
+
+    const handleAccept = () => {
+        // Handle call acceptance logic
+        setIncomingCall(null);
+    };
+
+    const handleReject = () => {
+        // Handle call rejection logic
+        setIncomingCall(null);
+    };
+
+    if (!incomingCall) return null;
+
+    return (
+        <div className="incoming-call-popup">
+            <p>Incoming call from: {incomingCall.from}</p>
+            <button onClick={handleAccept}>Accept</button>
+            <button onClick={handleReject}>Reject</button>
+        </div>
+    );
+};
+
+export default IncomingCallPopup;
